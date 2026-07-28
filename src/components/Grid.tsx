@@ -57,6 +57,9 @@ export interface GridProps {
   readonly preview?: { readonly cells: readonly number[]; readonly legal: boolean } | null
   readonly lastShot?: number | null
   readonly variant?: 'target' | 'own'
+  readonly shake?: boolean
+  /** Veils cells that have not been fired upon: only the enemy's waters wear it. */
+  readonly fog?: boolean
 }
 
 export const Grid = ({
@@ -70,6 +73,8 @@ export const Grid = ({
   preview,
   lastShot,
   variant = 'target',
+  shake = false,
+  fog = false,
 }: GridProps) => {
   const previewCells = new Set(preview?.cells ?? [])
 
@@ -103,7 +108,7 @@ export const Grid = ({
   }
 
   return (
-    <div className={`board board--${variant}`}>
+    <div className={`board board--${variant}${fog ? ' board--fog' : ''}`}>
       <div className="board__labels board__labels--x" aria-hidden="true">
         {COLUMNS.map((column) => (
           <span key={column}>{column}</span>
@@ -115,7 +120,7 @@ export const Grid = ({
         ))}
       </div>
       <div
-        className="board__grid"
+        className={`board__grid${shake ? ' board__grid--shake' : ''}`}
         role="group"
         aria-label={ariaLabel}
         onKeyDown={handleKeyDown}

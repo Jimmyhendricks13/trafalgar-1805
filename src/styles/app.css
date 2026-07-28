@@ -37,6 +37,22 @@
   color: var(--ink-soft);
   font-style: italic;
   max-width: 62ch;
+  min-height: 1.55em;
+}
+
+/* the order to open fire arrives after the held silence */
+.screen__lede-text {
+  display: inline-block;
+  animation: lede-in var(--lede-beat) ease-out;
+}
+
+@keyframes lede-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .screen__actions {
@@ -48,9 +64,28 @@
 
 .tally {
   margin: 0;
+  display: grid;
+  gap: 0.05rem;
+  justify-items: end;
   font-variant-numeric: tabular-nums;
-  color: var(--ink-soft);
-  font-size: 0.95rem;
+  text-align: right;
+}
+
+/* our own guns lead; what is done to us is a footnote */
+.tally__ours {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.tally__theirs,
+.tally__guns {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: var(--ink-faint);
 }
 
 .panel__heading {
@@ -172,6 +207,48 @@
   line-height: 0.82;
   padding: 0.06em 0.09em 0 0;
   color: var(--prussian-deep);
+}
+
+/* ---------- the fleet list ---------- */
+
+.despatch__lede {
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 1.1rem;
+}
+
+.despatch p.despatch__lede::first-letter {
+  font-family: inherit;
+  font-size: inherit;
+  float: none;
+  padding: 0;
+  color: inherit;
+}
+
+.roll {
+  margin: 1.75rem 0 0;
+  border-top: var(--rule);
+}
+
+.roll__heading {
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  margin: 2.75rem 0 0.6rem;
+}
+
+.roll__ship {
+  border-bottom: var(--hairline);
+  padding: 0.85rem 0;
+}
+
+.roll__name {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.roll__line {
+  margin: 0.1rem 0 0;
+  color: var(--ink-soft);
 }
 
 .quote {
@@ -315,7 +392,20 @@
 }
 
 .cell:not(:disabled) {
-  cursor: crosshair;
+  cursor: pointer;
+}
+
+/* laying the guns: only over British water we have not tried, and not on touch */
+@media (hover: hover) {
+  .board--fog .cell--unknown:not(:disabled) {
+    cursor: crosshair;
+  }
+
+  .board--fog .cell--hit,
+  .board--fog .cell--miss,
+  .board--own .cell {
+    cursor: default;
+  }
 }
 
 .cell:not(:disabled):hover {
@@ -328,34 +418,88 @@
   display: block;
 }
 
-/* a splash seen from the masthead */
+/* fog over the enemy's waters: cool grey-blue, thin enough to keep the rules visible */
+.board--fog .cell--unknown .cell__mark::before {
+  content: '';
+  position: absolute;
+  inset: 0 1px 1px 0;
+  background:
+    radial-gradient(ellipse 150% 120% at 30% 25%, rgba(196, 209, 216, 0.5), transparent 76%),
+    linear-gradient(145deg, rgba(126, 148, 160, 0.34), rgba(104, 126, 140, 0.26));
+}
+
+/* drift, on periods that do not line up with the ten-cell rows */
+.board--fog .cell--unknown:nth-child(7n + 2) .cell__mark::before {
+  background:
+    radial-gradient(ellipse 130% 110% at 68% 62%, rgba(204, 214, 219, 0.46), transparent 74%),
+    linear-gradient(112deg, rgba(112, 134, 148, 0.3), rgba(134, 154, 165, 0.24));
+}
+
+.board--fog .cell--unknown:nth-child(11n + 5) .cell__mark::before {
+  background:
+    radial-gradient(ellipse 140% 100% at 42% 78%, rgba(190, 204, 212, 0.44), transparent 78%),
+    linear-gradient(168deg, rgba(130, 150, 162, 0.28), rgba(106, 128, 142, 0.3));
+}
+
+.board--fog .cell--unknown:not(:disabled):hover .cell__mark::before {
+  opacity: 0.5;
+}
+
+/* a miss: the fog parts onto calm water */
+.cell--miss {
+  background: rgba(240, 233, 214, 0.5);
+}
+
+/* the ripple of the ball going in, expanding outward and gone */
 .cell--miss .cell__mark::before {
   content: '';
   position: absolute;
-  inset: 30%;
-  border: 1.5px solid rgba(75, 66, 56, 0.55);
+  inset: 20%;
+  border: 2px solid rgba(255, 255, 255, 0.9);
   border-radius: 50%;
-  box-shadow: inset 0 0 3px rgba(255, 255, 255, 0.5);
-  animation: ring var(--smoke-beat) ease-out;
+  animation: ripple var(--ripple-beat) ease-out forwards;
 }
 
-/* powder smoke and a spreading stain */
+/* what the lookouts still see afterwards: spray, settling */
+.cell--miss .cell__mark::after {
+  content: '';
+  position: absolute;
+  inset: 36%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.1) 78%);
+  box-shadow: inset 0 0 0 1px rgba(75, 66, 56, 0.28);
+  filter: blur(0.3px);
+}
+
+/* a hit: powder flash from the centre of the cell */
+.cell--hit {
+  background: rgba(209, 98, 30, 0.09);
+}
+
 .cell--hit .cell__mark::before {
   content: '';
   position: absolute;
-  inset: -8%;
-  border-radius: 45%;
-  background: radial-gradient(circle at 50% 50%, rgba(107, 35, 37, 0.5), rgba(107, 35, 37, 0.06) 68%, transparent 75%);
-  animation: bloom var(--smoke-beat) ease-out;
+  inset: -10%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 211, 154, 0.9),
+    rgba(209, 98, 30, 0.42) 52%,
+    transparent 72%
+  );
+  animation: flash var(--flash-beat) ease-out forwards;
 }
 
+/* and the fire that stays in her timbers: a coal, not a bead */
 .cell--hit .cell__mark::after {
   content: '';
   position: absolute;
-  inset: 34%;
-  background:
-    linear-gradient(45deg, transparent 44%, var(--oxblood) 44% 56%, transparent 56%),
-    linear-gradient(-45deg, transparent 44%, var(--oxblood) 44% 56%, transparent 56%);
+  inset: 31%;
+  border-radius: 48% 54% 50% 46%;
+  background: radial-gradient(circle at 50% 48%, var(--ember-core) 0%, var(--ember) 48%, rgba(107, 35, 37, 0.9) 100%);
+  box-shadow: 0 0 7px 2px rgba(209, 98, 30, 0.38);
+  filter: blur(0.4px);
+  animation: ember 3.4s ease-in-out infinite;
 }
 
 .cell--latest {
@@ -370,28 +514,54 @@
   background: rgba(107, 35, 37, 0.3);
 }
 
-@keyframes ring {
+@keyframes ripple {
+  from {
+    transform: scale(0.2);
+    opacity: 0.95;
+  }
+  to {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+
+@keyframes flash {
   from {
     transform: scale(0.3);
     opacity: 0;
   }
-  to {
-    transform: scale(1);
+  45% {
     opacity: 1;
+  }
+  to {
+    transform: scale(1.1);
+    opacity: 0.32;
   }
 }
 
-@keyframes bloom {
-  from {
-    transform: scale(0.2);
-    opacity: 0;
+@keyframes ember {
+  0%,
+  100% {
+    opacity: 0.82;
   }
-  60% {
-    opacity: 1;
+  50% {
+    opacity: 0.98;
   }
-  to {
-    transform: scale(1);
-    opacity: 1;
+}
+
+/* two pixels, once: a broadside felt through the deck */
+@keyframes board-shake {
+  0% {
+    transform: translateX(0);
+  }
+  30% {
+    transform: translateX(-2px);
+  }
+  65% {
+    transform: translateX(2px);
+  }
+  100% {
+    transform: translateX(0);
   }
 }
 
@@ -422,10 +592,25 @@
   fill: var(--ink);
 }
 
+.board__grid--shake {
+  animation: board-shake var(--shake-beat) ease-out;
+}
+
+/* a struck ship comes up out of the water damaged, over half a second */
 .hull--sunk {
-  transform: rotate(4deg);
   transform-origin: 50% 50%;
-  transition: transform var(--smoke-beat) ease-out;
+  animation: hull-strike var(--strike-beat) ease-out both;
+}
+
+@keyframes hull-strike {
+  from {
+    opacity: 0;
+    transform: rotate(0deg) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(4deg) scale(1);
+  }
 }
 
 .hull--sunk polygon {
@@ -542,6 +727,7 @@
   gap: 0.5rem;
   border-bottom: var(--hairline);
   padding-bottom: 0.15rem;
+  transition: opacity var(--beat) ease-out;
 }
 
 .status__name {
@@ -555,12 +741,19 @@
   letter-spacing: 0.14em;
   color: var(--ink-faint);
   align-self: center;
+  white-space: nowrap;
+  transition: color var(--beat) ease-out;
+}
+
+/* struck ships fade out of the reckoning */
+.status__ship--sunk {
+  opacity: 0.4;
 }
 
 .status__ship--sunk .status__name {
   text-decoration: line-through;
   text-decoration-color: var(--oxblood);
-  color: var(--ink-faint);
+  color: var(--ink);
 }
 
 .status__ship--sunk .status__state {
@@ -581,7 +774,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 0.55rem;
+  gap: 0.15rem;
 }
 
 .log__entry {
@@ -589,15 +782,23 @@
   grid-template-columns: 2.4rem 1fr;
   gap: 0.1rem 0.6rem;
   font-size: 0.95rem;
-  animation: fade var(--beat) ease-out;
+  padding: 0.3rem 0.45rem 0.35rem;
+  border-left: 2px solid transparent;
+  animation: fade var(--log-beat) ease-out;
+}
+
+.log__entry:nth-child(even) {
+  background: rgba(196, 177, 145, 0.22);
 }
 
 .log__number {
   grid-row: span 2;
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   color: var(--ink-faint);
-  font-size: 0.8rem;
-  padding-top: 0.15rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  padding-top: 0.3rem;
 }
 
 .log__side {
@@ -611,12 +812,48 @@
   color: var(--ink-soft);
 }
 
+/* a miss stays cool and unremarkable */
+.log__entry--plain .log__number {
+  color: #7e8b93;
+}
+
+/* a hit warms: brass */
+.log__entry--hit {
+  border-left-color: rgba(176, 141, 79, 0.7);
+}
+
+.log__entry--hit .log__number,
+.log__entry--hit .log__side {
+  color: var(--brass);
+}
+
 .log__entry--hit .log__text {
   color: var(--ink);
 }
 
+/* a sinking is the loudest thing in the roll */
+.log__entry--sunk,
+.log__entry--grave {
+  border-left-color: var(--brass);
+  background: linear-gradient(90deg, rgba(176, 141, 79, 0.2), rgba(176, 141, 79, 0.05) 70%, transparent);
+}
+
+.log__entry--sunk .log__number,
+.log__entry--grave .log__number,
+.log__entry--sunk .log__side,
+.log__entry--grave .log__side {
+  color: #8a6a2f;
+}
+
 .log__entry--sunk .log__text {
-  color: var(--oxblood);
+  color: var(--ink);
+}
+
+.log__ship {
+  font-variant-caps: all-small-caps;
+  font-feature-settings: 'c2sc', 'smcp';
+  letter-spacing: 0.09em;
+  color: #7c5c22;
 }
 
 .log__entry--grave .log__text {
@@ -629,7 +866,7 @@
 @keyframes fade {
   from {
     opacity: 0;
-    transform: translateY(-3px);
+    transform: translateY(-4px);
   }
   to {
     opacity: 1;

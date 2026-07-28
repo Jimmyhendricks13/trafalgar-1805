@@ -18,6 +18,52 @@ export const PREAMBLE_AFTER: readonly string[] = [
   'You have his fleet, his orders and his reputation. The question is whether you are the better tactician.',
 ]
 
+export const FLEET_ROLL_HEADING = 'The Combined Fleet'
+export const FLEET_ROLL_LEDE = 'These are your ships, Commander. Learn their names.'
+
+export const FLEET_ROLL: readonly { readonly name: string; readonly line: string }[] = [
+  {
+    name: 'Santísima Trinidad',
+    line: "136 guns, four decks. The largest warship in the world. Spain's pride.",
+  },
+  { name: 'Bucentaure', line: "80 guns. Villeneuve's flagship. Where you stand." },
+  { name: 'Santa Ana', line: '112 guns. Vice-Admiral Álava, second in the Spanish line.' },
+  {
+    name: 'Redoutable',
+    line: '74 guns. Captain Lucas drilled her crew in musketry. Her marksman will kill Nelson.',
+  },
+  {
+    name: 'Achille',
+    line: '74 guns. She will burn to the waterline. History has already written her end. You are here to change it.',
+  },
+]
+
+export const ENEMY_ROLL_HEADING = 'The Royal Navy'
+export const ENEMY_ROLL_LEDE = 'And these are the five you must break. Nelson brought them himself.'
+
+export const ENEMY_ROLL: readonly { readonly name: string; readonly line: string }[] = [
+  {
+    name: 'HMS Victory',
+    line: "104 guns. Nelson's flagship. He is aboard her, and he does not intend to survive the day quietly.",
+  },
+  {
+    name: 'HMS Royal Sovereign',
+    line: "100 guns. Collingwood's flagship, and the first British ship into your line.",
+  },
+  {
+    name: 'HMS Téméraire',
+    line: '98 guns. She saves Victory from boarding. Turner will paint her being towed away to be broken up.',
+  },
+  {
+    name: 'HMS Belleisle',
+    line: '74 guns. Dismasted to a hulk, colours nailed to the stump, still firing.',
+  },
+  {
+    name: 'HMS Mars',
+    line: '74 guns. Captain Duff is killed by a roundshot at the head of his own crew. She holds her station regardless.',
+  },
+]
+
 export const VICTORY_CODA: readonly string[] = [
   'The British squadron is broken and the Strait is open.',
   'No such despatch was ever written. In the world that happened, Villeneuve surrendered aboard Bucentaure, was paroled to France, and was found dead in a room at Rennes with six wounds in his chest. The Grande Armée turned east and marched to Austerlitz instead.',

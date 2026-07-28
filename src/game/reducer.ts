@@ -157,7 +157,7 @@ const fireShot = (state: GameState, attacker: Side, index: number): GameState =>
       attacker === 'ai' && sunkShip
         ? noteSink(state.aiMemory, defender.incoming, index, sunkShip.length)
         : state.aiMemory,
-    ...appendLog(state, { side: attacker, tone, text }),
+    ...appendLog(state, { side: attacker, tone, text, ship: sunkShip?.name }),
   }
 
   return { ...withShot, winner: victoryFor(withShot, defender, attacker) }
