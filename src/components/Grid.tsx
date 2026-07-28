@@ -57,6 +57,7 @@ export interface GridProps {
   readonly preview?: { readonly cells: readonly number[]; readonly legal: boolean } | null
   readonly lastShot?: number | null
   readonly variant?: 'target' | 'own'
+  readonly shake?: boolean
 }
 
 export const Grid = ({
@@ -70,6 +71,7 @@ export const Grid = ({
   preview,
   lastShot,
   variant = 'target',
+  shake = false,
 }: GridProps) => {
   const previewCells = new Set(preview?.cells ?? [])
 
@@ -115,7 +117,7 @@ export const Grid = ({
         ))}
       </div>
       <div
-        className="board__grid"
+        className={`board__grid${shake ? ' board__grid--shake' : ''}`}
         role="group"
         aria-label={ariaLabel}
         onKeyDown={handleKeyDown}

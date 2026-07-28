@@ -328,34 +328,61 @@
   display: block;
 }
 
-/* a splash seen from the masthead */
+/* a miss: the fog parts onto calm water */
+.cell--miss {
+  background: rgba(240, 233, 214, 0.5);
+}
+
+/* the ripple of the ball going in, expanding outward and gone */
 .cell--miss .cell__mark::before {
   content: '';
   position: absolute;
-  inset: 30%;
-  border: 1.5px solid rgba(75, 66, 56, 0.55);
+  inset: 20%;
+  border: 2px solid rgba(255, 255, 255, 0.9);
   border-radius: 50%;
-  box-shadow: inset 0 0 3px rgba(255, 255, 255, 0.5);
-  animation: ring var(--smoke-beat) ease-out;
+  animation: ripple var(--ripple-beat) ease-out forwards;
 }
 
-/* powder smoke and a spreading stain */
+/* what the lookouts still see afterwards: spray, settling */
+.cell--miss .cell__mark::after {
+  content: '';
+  position: absolute;
+  inset: 38%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 0 0 1px rgba(75, 66, 56, 0.32);
+}
+
+/* a hit: powder flash from the centre of the cell */
+.cell--hit {
+  background: rgba(209, 98, 30, 0.12);
+}
+
 .cell--hit .cell__mark::before {
   content: '';
   position: absolute;
-  inset: -8%;
-  border-radius: 45%;
-  background: radial-gradient(circle at 50% 50%, rgba(107, 35, 37, 0.5), rgba(107, 35, 37, 0.06) 68%, transparent 75%);
-  animation: bloom var(--smoke-beat) ease-out;
+  inset: -10%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 211, 154, 0.9),
+    rgba(209, 98, 30, 0.42) 52%,
+    transparent 72%
+  );
+  animation: flash var(--flash-beat) ease-out forwards;
 }
 
+/* and the fire that stays in her timbers */
 .cell--hit .cell__mark::after {
   content: '';
   position: absolute;
-  inset: 34%;
-  background:
-    linear-gradient(45deg, transparent 44%, var(--oxblood) 44% 56%, transparent 56%),
-    linear-gradient(-45deg, transparent 44%, var(--oxblood) 44% 56%, transparent 56%);
+  inset: 32%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 42% 38%, var(--ember-core), var(--ember) 55%, var(--oxblood) 100%);
+  box-shadow:
+    0 0 7px 1px rgba(209, 98, 30, 0.5),
+    inset 0 0 2px rgba(255, 229, 190, 0.9);
+  animation: ember 3.4s ease-in-out infinite;
 }
 
 .cell--latest {
@@ -370,28 +397,54 @@
   background: rgba(107, 35, 37, 0.3);
 }
 
-@keyframes ring {
+@keyframes ripple {
+  from {
+    transform: scale(0.2);
+    opacity: 0.95;
+  }
+  to {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+
+@keyframes flash {
   from {
     transform: scale(0.3);
     opacity: 0;
   }
+  45% {
+    opacity: 1;
+  }
   to {
-    transform: scale(1);
+    transform: scale(1.1);
+    opacity: 0.32;
+  }
+}
+
+@keyframes ember {
+  0%,
+  100% {
+    opacity: 0.86;
+  }
+  50% {
     opacity: 1;
   }
 }
 
-@keyframes bloom {
-  from {
-    transform: scale(0.2);
-    opacity: 0;
+/* two pixels, once: a broadside felt through the deck */
+@keyframes board-shake {
+  0% {
+    transform: translateX(0);
   }
-  60% {
-    opacity: 1;
+  30% {
+    transform: translateX(-2px);
   }
-  to {
-    transform: scale(1);
-    opacity: 1;
+  65% {
+    transform: translateX(2px);
+  }
+  100% {
+    transform: translateX(0);
   }
 }
 
@@ -422,10 +475,25 @@
   fill: var(--ink);
 }
 
+.board__grid--shake {
+  animation: board-shake var(--shake-beat) ease-out;
+}
+
+/* a struck ship comes up out of the water damaged, over half a second */
 .hull--sunk {
-  transform: rotate(4deg);
   transform-origin: 50% 50%;
-  transition: transform var(--smoke-beat) ease-out;
+  animation: hull-strike var(--strike-beat) ease-out both;
+}
+
+@keyframes hull-strike {
+  from {
+    opacity: 0;
+    transform: rotate(0deg) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(4deg) scale(1);
+  }
 }
 
 .hull--sunk polygon {
