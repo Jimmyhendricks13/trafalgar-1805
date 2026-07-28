@@ -16,6 +16,7 @@
 
   --font-display: 'Cormorant Garamond', 'Iowan Old Style', Palatino, Georgia, serif;
   --font-body: 'EB Garamond', 'Iowan Old Style', Palatino, Georgia, serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Menlo', 'Consolas', 'Liberation Mono', monospace;
 
   --hairline: 1px solid rgba(36, 31, 26, 0.28);
   --rule: 1px solid rgba(36, 31, 26, 0.5);

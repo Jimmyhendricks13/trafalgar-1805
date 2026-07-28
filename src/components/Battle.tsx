@@ -30,7 +30,7 @@ const FleetStatus = ({ fleet, heading }: { fleet: FleetState; heading: string })
         return (
           <li key={ship.id} className={`status__ship${sunk ? ' status__ship--sunk' : ''}`}>
             <span className="status__name">{ship.name}</span>
-            <span className="status__state">{sunk ? 'struck' : 'afloat'}</span>
+            <span className="status__state">{sunk ? 'lost' : 'afloat'}</span>
           </li>
         )
       })}

@@ -8,6 +8,8 @@ export interface Dispatch {
   readonly side: Side | 'system'
   readonly tone: DispatchTone
   readonly text: string
+  /** The ship a sinking refers to, so the log can set her name apart. */
+  readonly ship?: string
 }
 
 const PLAYER_MISS = [
