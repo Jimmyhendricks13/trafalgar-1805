@@ -1,7 +1,10 @@
+import { useState } from 'react'
+import { GOD_SAVE_THE_KING, MARSEILLAISE, useAnthem } from '../anthem'
 import { DEFEAT_CODA, RESIGNED_CODA, VICTORY_CODA } from '../content/history'
 import { DIFFICULTIES } from '../game/ai'
 import type { Action, GameState } from '../game/reducer'
 import { isSunk, survivingShips } from '../game/resolve'
+import { Ensign } from './Ensign'
 import { Grid } from './Grid'
 
 interface Props {
@@ -17,9 +20,31 @@ export const Aftermath = ({ state, dispatch }: Props) => {
   const lost = state.player.ships.filter((ship) => isSunk(state.player, ship))
   const opponent = DIFFICULTIES.find((option) => option.id === state.difficulty)
 
+  // The anthem plays whatever the gunnery is set to; it has its own toggle.
+  const [muted, setMuted] = useState(false)
+  useAnthem(won ? MARSEILLAISE : GOD_SAVE_THE_KING, muted)
+
   return (
     <main className="screen screen--aftermath">
+      <button
+        type="button"
+        className="anthem"
+        aria-pressed={muted}
+        aria-label={muted ? 'Play the anthem' : 'Silence the anthem'}
+        onClick={() => setMuted((was) => !was)}
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M4 9h3l5-4v14l-5-4H4z" />
+          {muted ? (
+            <path d="M16 9l5 6M21 9l-5 6" />
+          ) : (
+            <path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" />
+          )}
+        </svg>
+      </button>
+
       <header className="screen__header">
+        <Ensign won={won} />
         <p className="title__eyebrow">21 October 1805, evening</p>
         <h1 className="screen__title">
           {state.resigned

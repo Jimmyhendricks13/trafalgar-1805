@@ -876,6 +876,72 @@
 
 /* ---------- aftermath ---------- */
 
+.screen--aftermath .screen__header {
+  text-align: center;
+}
+
+.ensign {
+  display: block;
+  width: 120px;
+  margin: 0 auto 1.1rem;
+  border: 1px solid rgba(75, 66, 56, 0.35);
+  box-shadow: 0 2px 8px rgba(43, 38, 32, 0.22);
+  animation: colours var(--colours-beat) ease-out both;
+}
+
+.ensign--tricolore {
+  height: 80px;
+  background: linear-gradient(
+    to right,
+    #002395 0 33.333%,
+    #ffffff 33.333% 66.666%,
+    #ed2939 66.666% 100%
+  );
+}
+
+@keyframes colours {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.anthem {
+  position: absolute;
+  top: clamp(1.25rem, 3vw, 2.75rem);
+  right: clamp(1.25rem, 3vw, 2.75rem);
+  width: 2.1rem;
+  height: 2.1rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: var(--hairline);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition:
+    color var(--beat) ease-out,
+    border-color var(--beat) ease-out;
+}
+
+.anthem:hover {
+  color: var(--ink);
+  border-color: var(--ink-soft);
+}
+
+.anthem svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .aftermath {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);

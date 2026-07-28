@@ -30,6 +30,7 @@
   --shake-beat: 150ms;
   --log-beat: 200ms;
   --lede-beat: 400ms;
+  --colours-beat: 1000ms;
 }
 
 *,
