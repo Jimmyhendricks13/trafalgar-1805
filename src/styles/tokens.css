@@ -1,0 +1,92 @@
+:root {
+  --canvas: #e8dcc4;
+  --canvas-deep: #d8c8a8;
+  --canvas-shadow: #c4b191;
+  --ink: #241f1a;
+  --ink-soft: #4b4238;
+  --ink-faint: #7c7060;
+  --prussian: #1e3a5f;
+  --prussian-deep: #14263f;
+  --oxblood: #6b2325;
+  --brass: #b08d4f;
+  --smoke: #9aa0a0;
+
+  --font-display: 'Cormorant Garamond', 'Iowan Old Style', Palatino, Georgia, serif;
+  --font-body: 'EB Garamond', 'Iowan Old Style', Palatino, Georgia, serif;
+
+  --hairline: 1px solid rgba(36, 31, 26, 0.28);
+  --rule: 1px solid rgba(36, 31, 26, 0.5);
+  --radius: 2px;
+
+  --beat: 220ms;
+  --smoke-beat: 650ms;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background-color: var(--canvas-deep);
+  background-image:
+    radial-gradient(ellipse 120% 80% at 20% 0%, rgba(232, 220, 196, 0.95), transparent 60%),
+    radial-gradient(ellipse 100% 70% at 85% 100%, rgba(196, 177, 145, 0.8), transparent 65%),
+    linear-gradient(160deg, #ecdfc6 0%, #ddcdad 45%, #cdba99 100%);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Canvas tooth. An SVG turbulence layer costs nothing and kills the flatness. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.32;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23t)' opacity='0.45'/%3E%3C/svg%3E");
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  margin: 0;
+}
+
+kbd {
+  font-family: var(--font-body);
+  border: var(--hairline);
+  border-bottom-width: 2px;
+  border-radius: var(--radius);
+  padding: 0 0.3em;
+  font-size: 0.9em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
