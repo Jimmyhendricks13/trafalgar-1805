@@ -49,7 +49,7 @@ export const App = () => {
       const timer = setTimeout(() => dispatch({ type: 'AI_FIRE' }), NELSON_THINKING_MS)
       return () => clearTimeout(timer)
     }
-    setRevealed(state.nextDispatchId)
+    setRevealed(state.nextDispatchId - 1)
     return undefined
   }, [state.phase, state.battleSub, state.nextDispatchId, pending])
 
