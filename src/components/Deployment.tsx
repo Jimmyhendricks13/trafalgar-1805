@@ -114,10 +114,14 @@ export const Deployment = ({ state, dispatch }: Props) => {
                 type="button"
                 className="button button--stacked"
                 onClick={() =>
-                  dispatch({
-                    type: 'SET_ORIENTATION',
-                    orientation: state.orientation === 'vertical' ? 'horizontal' : 'vertical',
-                  })
+                  // With a ship in hand the button brings her about, as R does; otherwise it
+                  // only sets the heading the next placement will take.
+                  selected
+                    ? dispatch({ type: 'ROTATE_SHIP', id: selected.id })
+                    : dispatch({
+                        type: 'SET_ORIENTATION',
+                        orientation: state.orientation === 'vertical' ? 'horizontal' : 'vertical',
+                      })
                 }
               >
                 <span>
