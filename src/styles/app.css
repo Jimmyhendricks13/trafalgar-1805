@@ -209,6 +209,43 @@
   color: var(--prussian-deep);
 }
 
+/* ---------- the fleet list ---------- */
+
+.despatch__lede {
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 1.1rem;
+}
+
+.despatch p.despatch__lede::first-letter {
+  font-family: inherit;
+  font-size: inherit;
+  float: none;
+  padding: 0;
+  color: inherit;
+}
+
+.roll {
+  margin: 1.75rem 0 0;
+  border-top: var(--rule);
+}
+
+.roll__ship {
+  border-bottom: var(--hairline);
+  padding: 0.85rem 0;
+}
+
+.roll__name {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.roll__line {
+  margin: 0.1rem 0 0;
+  color: var(--ink-soft);
+}
+
 .quote {
   margin: 1.5em 0;
   padding: 0.2em 0 0.2em 1.4em;

@@ -18,6 +18,26 @@ export const PREAMBLE_AFTER: readonly string[] = [
   'You have his fleet, his orders and his reputation. The question is whether you are the better tactician.',
 ]
 
+export const FLEET_ROLL_HEADING = 'The Combined Fleet'
+export const FLEET_ROLL_LEDE = 'These are your ships, Commander. Learn their names.'
+
+export const FLEET_ROLL: readonly { readonly name: string; readonly line: string }[] = [
+  {
+    name: 'Santísima Trinidad',
+    line: "136 guns, four decks. The largest warship in the world. Spain's pride.",
+  },
+  { name: 'Bucentaure', line: "80 guns. Villeneuve's flagship. Where you stand." },
+  { name: 'Santa Ana', line: '112 guns. Vice-Admiral Álava, second in the Spanish line.' },
+  {
+    name: 'Redoutable',
+    line: '74 guns. Captain Lucas drilled her crew in musketry. Her marksman will kill Nelson.',
+  },
+  {
+    name: 'Achille',
+    line: '74 guns. She will burn to the waterline. History has already written her end. You are here to change it.',
+  },
+]
+
 export const VICTORY_CODA: readonly string[] = [
   'The British squadron is broken and the Strait is open.',
   'No such despatch was ever written. In the world that happened, Villeneuve surrendered aboard Bucentaure, was paroled to France, and was found dead in a room at Rennes with six wounds in his chest. The Grande Armée turned east and marched to Austerlitz instead.',
