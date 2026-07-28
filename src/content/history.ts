@@ -38,6 +38,32 @@ export const FLEET_ROLL: readonly { readonly name: string; readonly line: string
   },
 ]
 
+export const ENEMY_ROLL_HEADING = 'The Royal Navy'
+export const ENEMY_ROLL_LEDE = 'And these are the five you must break. Nelson brought them himself.'
+
+export const ENEMY_ROLL: readonly { readonly name: string; readonly line: string }[] = [
+  {
+    name: 'HMS Victory',
+    line: "104 guns. Nelson's flagship. He is aboard her, and he does not intend to survive the day quietly.",
+  },
+  {
+    name: 'HMS Royal Sovereign',
+    line: "100 guns. Collingwood's flagship, and the first British ship into your line.",
+  },
+  {
+    name: 'HMS Téméraire',
+    line: '98 guns. She saves Victory from boarding. Turner will paint her being towed away to be broken up.',
+  },
+  {
+    name: 'HMS Belleisle',
+    line: '74 guns. Dismasted to a hulk, colours nailed to the stump, still firing.',
+  },
+  {
+    name: 'HMS Mars',
+    line: '74 guns. Captain Duff is killed by a roundshot at the head of his own crew. She holds her station regardless.',
+  },
+]
+
 export const VICTORY_CODA: readonly string[] = [
   'The British squadron is broken and the Strait is open.',
   'No such despatch was ever written. In the world that happened, Villeneuve surrendered aboard Bucentaure, was paroled to France, and was found dead in a room at Rennes with six wounds in his chest. The Grande Armée turned east and marched to Austerlitz instead.',

@@ -230,6 +230,11 @@
   border-top: var(--rule);
 }
 
+.roll__heading {
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  margin: 2.75rem 0 0.6rem;
+}
+
 .roll__ship {
   border-bottom: var(--hairline);
   padding: 0.85rem 0;

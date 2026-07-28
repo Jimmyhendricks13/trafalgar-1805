@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import {
+  ENEMY_ROLL,
+  ENEMY_ROLL_HEADING,
+  ENEMY_ROLL_LEDE,
   FLEET_ROLL,
   FLEET_ROLL_HEADING,
   FLEET_ROLL_LEDE,
@@ -12,6 +15,17 @@ import type { Action } from '../game/reducer'
 interface Props {
   readonly dispatch: (action: Action) => void
 }
+
+const Roll = ({ ships }: { ships: readonly { name: string; line: string }[] }) => (
+  <dl className="roll">
+    {ships.map((ship) => (
+      <div className="roll__ship" key={ship.name}>
+        <dt className="roll__name">{ship.name}</dt>
+        <dd className="roll__line">{ship.line}</dd>
+      </div>
+    ))}
+  </dl>
+)
 
 /** Two despatches read in turn before the fleet is stationed. */
 export const Preamble = ({ dispatch }: Props) => {
@@ -53,15 +67,11 @@ export const Preamble = ({ dispatch }: Props) => {
       <article className="despatch">
         <h1 className="despatch__heading">{FLEET_ROLL_HEADING}</h1>
         <p className="despatch__lede">{FLEET_ROLL_LEDE}</p>
+        <Roll ships={FLEET_ROLL} />
 
-        <dl className="roll">
-          {FLEET_ROLL.map((ship) => (
-            <div className="roll__ship" key={ship.name}>
-              <dt className="roll__name">{ship.name}</dt>
-              <dd className="roll__line">{ship.line}</dd>
-            </div>
-          ))}
-        </dl>
+        <h2 className="roll__heading">{ENEMY_ROLL_HEADING}</h2>
+        <p className="despatch__lede">{ENEMY_ROLL_LEDE}</p>
+        <Roll ships={ENEMY_ROLL} />
       </article>
 
       <button
