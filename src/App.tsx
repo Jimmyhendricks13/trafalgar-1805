@@ -14,6 +14,8 @@ const HIT_MS = 300
 const SUNK_MS = 650
 const SHAKE_MS = 150
 const NELSON_THINKING_MS = 550
+/** The silence before the first broadside. Both fleets in sight, no guns yet. */
+const STAND_TO_MS = 1500
 
 const beatFor = (tone: DispatchTone): number => {
   if (tone === 'sunk' || tone === 'grave') return SUNK_MS
@@ -26,6 +28,7 @@ export const App = () => {
   /** Highest dispatch id the log is allowed to show: a shot's line lands when its animation ends. */
   const [revealed, setRevealed] = useState(0)
   const [shake, setShake] = useState<'target' | 'own' | null>(null)
+  const [armed, setArmed] = useState(false)
   const lastHeard = useRef(0)
 
   const resolving =
@@ -49,6 +52,14 @@ export const App = () => {
     setRevealed(state.nextDispatchId)
     return undefined
   }, [state.phase, state.battleSub, state.nextDispatchId, pending])
+
+  // Hold the line for a beat and a half when the fleets first sight one another.
+  useEffect(() => {
+    setArmed(false)
+    if (state.phase !== 'battle') return undefined
+    const timer = setTimeout(() => setArmed(true), STAND_TO_MS)
+    return () => clearTimeout(timer)
+  }, [state.phase])
 
   // Nothing is held back outside the battle screen.
   useEffect(() => {
@@ -79,7 +90,9 @@ export const App = () => {
   if (state.phase === 'preamble') return <Preamble dispatch={dispatch} />
   if (state.phase === 'deployment') return <Deployment state={state} dispatch={dispatch} />
   if (state.phase === 'battle') {
-    return <Battle state={state} dispatch={dispatch} log={visibleLog} shake={shake} />
+    return (
+      <Battle state={state} dispatch={dispatch} log={visibleLog} shake={shake} armed={armed} />
+    )
   }
   return <Aftermath state={state} dispatch={dispatch} />
 }

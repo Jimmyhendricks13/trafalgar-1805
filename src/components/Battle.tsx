@@ -10,6 +10,8 @@ interface Props {
   readonly dispatch: (action: Action) => void
   readonly log: readonly Dispatch[]
   readonly shake: 'target' | 'own' | null
+  /** False for the held beat before the first broadside. */
+  readonly armed: boolean
 }
 
 const sunkShips = (fleet: FleetState): readonly Ship[] =>
@@ -38,6 +40,14 @@ const FleetStatus = ({ fleet, heading }: { fleet: FleetState; heading: string })
   </section>
 )
 
+/** Read off the last thing our own guns did, rather than kept as its own state. */
+const gunState = (state: GameState, log: readonly Dispatch[]): string => {
+  if (state.winner) return 'silent'
+  const ours = log.find((entry) => entry.side === 'player')
+  if (!ours) return 'silent'
+  return ours.tone === 'sunk' || ours.tone === 'grave' ? 'devastating' : 'engaged'
+}
+
 const turnLabel = (state: GameState): string => {
   if (state.battleSub === 'awaitingPlayerShot') return 'Your broadside. Choose a bearing.'
   if (state.battleSub === 'resolvingPlayerShot') return 'The smoke clears…'
@@ -45,7 +55,7 @@ const turnLabel = (state: GameState): string => {
   return 'The British fire.'
 }
 
-export const Battle = ({ state, dispatch, log, shake }: Props) => {
+export const Battle = ({ state, dispatch, log, shake, armed }: Props) => {
   const ours = tally(state.enemy)
   const theirs = tally(state.player)
   const britishWrecks = sunkShips(state.enemy)
@@ -57,15 +67,19 @@ export const Battle = ({ state, dispatch, log, shake }: Props) => {
         <div>
           <h1 className="screen__title">Cape Trafalgar</h1>
           <p className="screen__lede" aria-live="polite">
-            {turnLabel(state)}
+            {armed && <span className="screen__lede-text">{turnLabel(state)}</span>}
           </p>
         </div>
         <div className="screen__actions">
           <p className="tally">
-            {ours.hits} hits in {ours.fired} shots · they have landed {theirs.hits}
+            <span className="tally__ours">
+              Broadsides: {ours.fired} fired · {ours.hits} struck
+            </span>
+            <span className="tally__theirs">Incoming: {theirs.hits}</span>
+            <span className="tally__guns">Guns: {gunState(state, log)}</span>
           </p>
           <button type="button" className="button" onClick={() => dispatch({ type: 'TOGGLE_SOUND' })}>
-            Guns: {state.soundOn ? 'audible' : 'silent'}
+            Cannon: {state.soundOn ? 'audible' : 'silent'}
           </button>
           <button type="button" className="button" onClick={() => dispatch({ type: 'RESIGN' })}>
             Strike your colours
@@ -79,7 +93,7 @@ export const Battle = ({ state, dispatch, log, shake }: Props) => {
           <Grid
             cells={state.enemy.incoming}
             ariaLabel="British waters. Choose a cell to fire upon."
-            interactive={state.battleSub === 'awaitingPlayerShot' && !state.winner}
+            interactive={armed && state.battleSub === 'awaitingPlayerShot' && !state.winner}
             lastShot={state.lastPlayerShot}
             shake={shake === 'target'}
             fog

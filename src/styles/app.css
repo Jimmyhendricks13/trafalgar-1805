@@ -37,6 +37,22 @@
   color: var(--ink-soft);
   font-style: italic;
   max-width: 62ch;
+  min-height: 1.55em;
+}
+
+/* the order to open fire arrives after the held silence */
+.screen__lede-text {
+  display: inline-block;
+  animation: lede-in var(--lede-beat) ease-out;
+}
+
+@keyframes lede-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .screen__actions {
@@ -48,9 +64,28 @@
 
 .tally {
   margin: 0;
+  display: grid;
+  gap: 0.05rem;
+  justify-items: end;
   font-variant-numeric: tabular-nums;
-  color: var(--ink-soft);
-  font-size: 0.95rem;
+  text-align: right;
+}
+
+/* our own guns lead; what is done to us is a footnote */
+.tally__ours {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.tally__theirs,
+.tally__guns {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: var(--ink-faint);
 }
 
 .panel__heading {
@@ -315,7 +350,20 @@
 }
 
 .cell:not(:disabled) {
-  cursor: crosshair;
+  cursor: pointer;
+}
+
+/* laying the guns: only over British water we have not tried, and not on touch */
+@media (hover: hover) {
+  .board--fog .cell--unknown:not(:disabled) {
+    cursor: crosshair;
+  }
+
+  .board--fog .cell--hit,
+  .board--fog .cell--miss,
+  .board--own .cell {
+    cursor: default;
+  }
 }
 
 .cell:not(:disabled):hover {
