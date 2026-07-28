@@ -32,14 +32,32 @@ export const Deployment = ({ state, dispatch }: Props) => {
     return { cells: shipCells(candidate), legal: canPlace(state.player.ships, candidate) }
   })()
 
+  const heading = state.orientation === 'vertical' ? 'north–south' : 'east–west'
+
   return (
     <main className="screen screen--deployment">
       <header className="screen__header">
         <h1 className="screen__title">Form the line</h1>
-        <p className="screen__lede">
-          Station your five ships. They may lie alongside one another, but not across.
-          Press <kbd>R</kbd> or right-click to bring a ship about.
-        </p>
+        <ol className="steps">
+          <li className={`steps__step${selected ? '' : ' steps__step--now'}`}>
+            Select a ship from your fleet.
+          </li>
+          <li className={`steps__step${selected ? ' steps__step--now' : ''}`}>
+            {selected ? (
+              <>
+                Click the grid to place <strong>{selected.name}</strong>. Press <kbd>R</kbd> to
+                rotate her heading.
+              </>
+            ) : (
+              <>
+                Click the grid to position her. Press <kbd>R</kbd> to rotate.
+              </>
+            )}
+          </li>
+          <li className="steps__step">
+            Signal the fleet to engage. Ships may lie alongside one another, but not across.
+          </li>
+        </ol>
       </header>
 
       <div className="deployment">
@@ -57,69 +75,93 @@ export const Deployment = ({ state, dispatch }: Props) => {
         />
 
         <aside className="roster" onContextMenu={(event) => event.preventDefault()}>
-          <h2 className="panel__heading">The Combined Fleet</h2>
-          <ul className="roster__list">
-            {state.player.ships.map((ship) => (
-              <li key={ship.id}>
-                <button
-                  type="button"
-                  className={`roster__ship${
-                    ship.id === state.selectedShipId ? ' roster__ship--active' : ''
-                  }`}
-                  aria-pressed={ship.id === state.selectedShipId}
-                  onClick={() => dispatch({ type: 'SELECT_SHIP', id: ship.id })}
-                  onContextMenu={(event) => {
-                    event.preventDefault()
-                    dispatch({ type: 'ROTATE_SHIP', id: ship.id })
-                  }}
-                >
-                  <span className="roster__name">{ship.name}</span>
-                  <span className="roster__meta">
-                    {ship.guns} guns · {ship.length} cells
-                  </span>
-                  <span className="roster__note">{ship.note}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
+          <section className="roster__fleet">
+            <h2 className="panel__heading">The Combined Fleet</h2>
+            <ul className="roster__list">
+              {state.player.ships.map((ship) => {
+                const active = ship.id === state.selectedShipId
+                return (
+                  <li key={ship.id}>
+                    <button
+                      type="button"
+                      className={`roster__ship${active ? ' roster__ship--active' : ''}`}
+                      aria-pressed={active}
+                      onClick={() => dispatch({ type: 'SELECT_SHIP', id: active ? null : ship.id })}
+                      onContextMenu={(event) => {
+                        event.preventDefault()
+                        dispatch({ type: 'ROTATE_SHIP', id: ship.id })
+                      }}
+                    >
+                      <span className="roster__name">{ship.name}</span>
+                      <span className="roster__meta">
+                        {ship.guns} guns · {ship.length} cells
+                      </span>
+                      <span className="roster__note">{ship.note}</span>
+                      <span className="roster__state">
+                        {active ? 'Selected — click the grid' : 'Stationed'}
+                      </span>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </section>
 
-          <div className="roster__controls">
-            <button
-              type="button"
-              className="button"
-              onClick={() =>
-                dispatch({
-                  type: 'SET_ORIENTATION',
-                  orientation: state.orientation === 'vertical' ? 'horizontal' : 'vertical',
-                })
-              }
-            >
-              Heading: {state.orientation === 'vertical' ? 'north–south' : 'east–west'}
-            </button>
-            <button type="button" className="button" onClick={() => dispatch({ type: 'RANDOMISE' })}>
-              Let the sailing master decide
-            </button>
-            <button
-              type="button"
-              className="button"
-              title={VILLENEUVE_FORMATION_NOTE}
-              onClick={() => dispatch({ type: 'ADOPT_FORMATION' })}
-            >
-              Adopt Villeneuve's formation
-            </button>
-          </div>
+          <section className="roster__orders">
+            <h2 className="panel__heading">Orders</h2>
+            <div className="roster__controls">
+              <button
+                type="button"
+                className="button button--stacked"
+                onClick={() =>
+                  // With a ship in hand the button brings her about, as R does; otherwise it
+                  // only sets the heading the next placement will take.
+                  selected
+                    ? dispatch({ type: 'ROTATE_SHIP', id: selected.id })
+                    : dispatch({
+                        type: 'SET_ORIENTATION',
+                        orientation: state.orientation === 'vertical' ? 'horizontal' : 'vertical',
+                      })
+                }
+              >
+                <span>
+                  Rotate (<kbd>R</kbd>)
+                </span>
+                <span className="button__note">Currently {heading}</span>
+              </button>
+              <button
+                type="button"
+                className="button button--stacked"
+                onClick={() => dispatch({ type: 'RANDOMISE' })}
+              >
+                <span>Let the sailing master decide</span>
+                <span className="button__note">Stations all five ships at random</span>
+              </button>
+              <button
+                type="button"
+                className="button button--stacked"
+                title={VILLENEUVE_FORMATION_NOTE}
+                onClick={() => dispatch({ type: 'ADOPT_FORMATION' })}
+              >
+                <span>Adopt Villeneuve's formation</span>
+                <span className="button__note">The real line of 21 October</span>
+              </button>
+            </div>
+          </section>
 
-          <label className="toggle">
-            <input
-              type="checkbox"
-              checked={state.deathOfNelson}
-              onChange={() => dispatch({ type: 'TOGGLE_VARIANT' })}
-            />
-            <span>
-              <strong>The Death of Nelson</strong> — variant rule: sinking HMS Victory wins the
-              day at once.
-            </span>
-          </label>
+          <section className="roster__variant">
+            <h2 className="panel__heading">Variant rules</h2>
+            <label className="toggle">
+              <input
+                type="checkbox"
+                checked={state.deathOfNelson}
+                onChange={() => dispatch({ type: 'TOGGLE_VARIANT' })}
+              />
+              <span>
+                <strong>The Death of Nelson</strong> — sinking HMS Victory wins the day at once.
+              </span>
+            </label>
+          </section>
 
           <button
             type="button"

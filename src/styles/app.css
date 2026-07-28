@@ -634,7 +634,53 @@
 
 .roster {
   display: grid;
-  gap: 0.9rem;
+  gap: 1.6rem;
+}
+
+.roster__orders,
+.roster__variant {
+  border-top: var(--rule);
+  padding-top: 0.9rem;
+}
+
+.roster__fleet .panel__heading,
+.roster__orders .panel__heading,
+.roster__variant .panel__heading {
+  margin-bottom: 0.5rem;
+}
+
+/* The numbered guide through the three steps of forming a line. */
+.steps {
+  list-style: none;
+  counter-reset: step;
+  margin: 0.45rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.6rem;
+  color: var(--ink-faint);
+  font-size: 0.95rem;
+}
+
+.steps__step {
+  counter-increment: step;
+  transition: color var(--beat) ease-out;
+}
+
+.steps__step::before {
+  content: counter(step) '. ';
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+}
+
+.steps__step--now {
+  color: var(--ink);
+}
+
+.steps__step--now strong {
+  font-weight: 500;
+  font-family: var(--font-display);
+  font-size: 1.05em;
 }
 
 .roster__list {
@@ -657,16 +703,43 @@
   border-radius: var(--radius);
   padding: 0.5rem 0.7rem;
   cursor: pointer;
-  transition: background var(--beat) ease-out;
+  border-left: 3px solid transparent;
+  opacity: 0.72;
+  transition:
+    background var(--beat) ease-out,
+    opacity var(--beat) ease-out;
 }
 
 .roster__ship:hover {
   background: rgba(232, 220, 196, 0.7);
+  opacity: 1;
 }
 
 .roster__ship--active {
-  border-color: var(--prussian);
+  border-color: var(--brass);
+  border-left-color: var(--brass);
   background: rgba(30, 58, 95, 0.12);
+  opacity: 1;
+}
+
+.roster__state {
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-top: 0.25rem;
+}
+
+.roster__state::before {
+  content: '✓ ';
+}
+
+.roster__ship--active .roster__state {
+  color: var(--brass);
+}
+
+.roster__ship--active .roster__state::before {
+  content: '▸ ';
 }
 
 .roster__name {
@@ -690,6 +763,20 @@
 .roster__controls {
   display: grid;
   gap: 0.4rem;
+}
+
+.button--stacked {
+  display: grid;
+  gap: 0.1rem;
+  text-align: left;
+  line-height: 1.3;
+}
+
+.button__note {
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 /* ---------- battle ---------- */
