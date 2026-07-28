@@ -1,4 +1,4 @@
-import { DEFEAT_CODA, VICTORY_CODA } from '../content/history'
+import { DEFEAT_CODA, RESIGNED_CODA, VICTORY_CODA } from '../content/history'
 import { DIFFICULTIES } from '../game/ai'
 import type { Action, GameState } from '../game/reducer'
 import { isSunk, survivingShips } from '../game/resolve'
@@ -32,7 +32,7 @@ export const Aftermath = ({ state, dispatch }: Props) => {
 
       <div className="aftermath">
         <article className="despatch">
-          {(won ? VICTORY_CODA : DEFEAT_CODA).map((paragraph) => (
+          {(state.resigned ? RESIGNED_CODA : won ? VICTORY_CODA : DEFEAT_CODA).map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
 

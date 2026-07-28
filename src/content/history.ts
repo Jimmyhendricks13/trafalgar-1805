@@ -29,3 +29,9 @@ export const DEFEAT_CODA: readonly string[] = [
   'Nelson dies below decks aboard Victory at half past four, told first that the day is his. Britain rules the sea for a century. The boats at Boulogne rot at their moorings.',
   'History is stubborn. Try again.',
 ]
+
+export const RESIGNED_CODA: readonly string[] = [
+  'The action is broken off. Your ships bear away with the wind on the quarter, still afloat, and the British are left the field.',
+  'Villeneuve was blamed for less. He had written to the Emperor that summer that his fleet was not fit to fight; he sailed anyway, and the verdict of history was passed on the man rather than the fleet.',
+  'Nothing is decided. Come about and engage.',
+]
