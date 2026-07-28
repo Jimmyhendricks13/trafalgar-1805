@@ -82,6 +82,7 @@ export const Battle = ({ state, dispatch, log, shake }: Props) => {
             interactive={state.battleSub === 'awaitingPlayerShot' && !state.winner}
             lastShot={state.lastPlayerShot}
             shake={shake === 'target'}
+            fog
             ships={britishWrecks}
             sunkShipIds={britishWrecks.map((ship) => ship.id)}
             onCell={(index) => dispatch({ type: 'FIRE', index })}

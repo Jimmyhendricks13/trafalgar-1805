@@ -328,6 +328,33 @@
   display: block;
 }
 
+/* fog over the enemy's waters: cool grey-blue, thin enough to keep the rules visible */
+.board--fog .cell--unknown .cell__mark::before {
+  content: '';
+  position: absolute;
+  inset: 0 1px 1px 0;
+  background:
+    radial-gradient(ellipse 150% 120% at 30% 25%, rgba(196, 209, 216, 0.5), transparent 76%),
+    linear-gradient(145deg, rgba(126, 148, 160, 0.34), rgba(104, 126, 140, 0.26));
+}
+
+/* drift, on periods that do not line up with the ten-cell rows */
+.board--fog .cell--unknown:nth-child(7n + 2) .cell__mark::before {
+  background:
+    radial-gradient(ellipse 130% 110% at 68% 62%, rgba(204, 214, 219, 0.46), transparent 74%),
+    linear-gradient(112deg, rgba(112, 134, 148, 0.3), rgba(134, 154, 165, 0.24));
+}
+
+.board--fog .cell--unknown:nth-child(11n + 5) .cell__mark::before {
+  background:
+    radial-gradient(ellipse 140% 100% at 42% 78%, rgba(190, 204, 212, 0.44), transparent 78%),
+    linear-gradient(168deg, rgba(130, 150, 162, 0.28), rgba(106, 128, 142, 0.3));
+}
+
+.board--fog .cell--unknown:not(:disabled):hover .cell__mark::before {
+  opacity: 0.5;
+}
+
 /* a miss: the fog parts onto calm water */
 .cell--miss {
   background: rgba(240, 233, 214, 0.5);
@@ -347,15 +374,16 @@
 .cell--miss .cell__mark::after {
   content: '';
   position: absolute;
-  inset: 38%;
+  inset: 36%;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.55);
-  box-shadow: 0 0 0 1px rgba(75, 66, 56, 0.32);
+  background: radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.1) 78%);
+  box-shadow: inset 0 0 0 1px rgba(75, 66, 56, 0.28);
+  filter: blur(0.3px);
 }
 
 /* a hit: powder flash from the centre of the cell */
 .cell--hit {
-  background: rgba(209, 98, 30, 0.12);
+  background: rgba(209, 98, 30, 0.09);
 }
 
 .cell--hit .cell__mark::before {
@@ -372,16 +400,15 @@
   animation: flash var(--flash-beat) ease-out forwards;
 }
 
-/* and the fire that stays in her timbers */
+/* and the fire that stays in her timbers: a coal, not a bead */
 .cell--hit .cell__mark::after {
   content: '';
   position: absolute;
-  inset: 32%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 42% 38%, var(--ember-core), var(--ember) 55%, var(--oxblood) 100%);
-  box-shadow:
-    0 0 7px 1px rgba(209, 98, 30, 0.5),
-    inset 0 0 2px rgba(255, 229, 190, 0.9);
+  inset: 31%;
+  border-radius: 48% 54% 50% 46%;
+  background: radial-gradient(circle at 50% 48%, var(--ember-core) 0%, var(--ember) 48%, rgba(107, 35, 37, 0.9) 100%);
+  box-shadow: 0 0 7px 2px rgba(209, 98, 30, 0.38);
+  filter: blur(0.4px);
   animation: ember 3.4s ease-in-out infinite;
 }
 
@@ -425,10 +452,10 @@
 @keyframes ember {
   0%,
   100% {
-    opacity: 0.86;
+    opacity: 0.82;
   }
   50% {
-    opacity: 1;
+    opacity: 0.98;
   }
 }
 

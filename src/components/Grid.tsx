@@ -58,6 +58,8 @@ export interface GridProps {
   readonly lastShot?: number | null
   readonly variant?: 'target' | 'own'
   readonly shake?: boolean
+  /** Veils cells that have not been fired upon: only the enemy's waters wear it. */
+  readonly fog?: boolean
 }
 
 export const Grid = ({
@@ -72,6 +74,7 @@ export const Grid = ({
   lastShot,
   variant = 'target',
   shake = false,
+  fog = false,
 }: GridProps) => {
   const previewCells = new Set(preview?.cells ?? [])
 
@@ -105,7 +108,7 @@ export const Grid = ({
   }
 
   return (
-    <div className={`board board--${variant}`}>
+    <div className={`board board--${variant}${fog ? ' board--fog' : ''}`}>
       <div className="board__labels board__labels--x" aria-hidden="true">
         {COLUMNS.map((column) => (
           <span key={column}>{column}</span>
