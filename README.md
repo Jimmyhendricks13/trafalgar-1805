@@ -52,6 +52,15 @@ Vite's content-hashed `/assets/*`, `must-revalidate` on `index.html` so a deploy
 effect on the next load, and a strict CSP (no backend, no external origins — the fonts are
 self-hosted and the paper texture is an inline SVG filter).
 
+## Audio
+
+Gunfire is synthesised in the browser (filtered noise, `src/sound.ts`) — no samples. The two
+anthems on the closing screen are public-domain recordings from Wikimedia Commons, trimmed to
+fourteen seconds, mono, 96 kbps:
+
+- `public/audio/la-marseillaise.mp3` — [La Marseillaise](https://commons.wikimedia.org/wiki/File:La_Marseillaise.ogg)
+- `public/audio/god-save-the-king.mp3` — [U.S. Navy Band, God Save the King](https://commons.wikimedia.org/wiki/File:U.S._Navy_Band_-_God_Save_the_King.oga)
+
 ## Historical note
 
 The ships are real and present at the battle: *Santísima Trinidad* (136 guns, the largest
