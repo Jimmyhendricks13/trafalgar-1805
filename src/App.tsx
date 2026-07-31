@@ -55,6 +55,12 @@ export const App = () => {
   const still = useRef(prefersStillness())
   /** The dispatch whose kill we have already dwelt on, so we do it once. */
   const dweltOn = useRef<number | null>(null)
+  /** Read when a gun speaks, never a reason for one to speak again. */
+  const audible = useRef(state.soundOn)
+
+  useEffect(() => {
+    audible.current = state.soundOn
+  }, [state.soundOn])
 
   const resolving =
     state.battleSub === 'resolvingPlayerShot' || state.battleSub === 'resolvingAiShot'
@@ -71,9 +77,9 @@ export const App = () => {
     const theirs = state.battleSub === 'resolvingAiShot' ? state.lastAiShot : null
     const target = ours ?? theirs
     if (target === null) return
-    if (state.soundOn) playCombat(ours !== null ? 'ours' : 'theirs')
+    if (audible.current) playCombat(ours !== null ? 'ours' : 'theirs')
     if (!still.current) setFlight({ side: ours !== null ? 'player' : 'ai', target })
-  }, [state.phase, state.battleSub, state.lastPlayerShot, state.lastAiShot, state.soundOn])
+  }, [state.phase, state.battleSub, state.lastPlayerShot, state.lastAiShot])
 
   const landNow = useCallback(() => setFlight(null), [])
 
@@ -174,16 +180,18 @@ export const App = () => {
   useEffect(() => {
     if (flight) return
     if (!pending || (pending.tone !== 'sunk' && pending.tone !== 'grave')) return
-    if (state.soundOn) playCombat('sinking')
+    if (audible.current) playCombat('sinking')
     setShake(state.battleSub === 'resolvingPlayerShot' ? 'target' : 'own')
     const timer = setTimeout(() => setShake(null), SHAKE_MS)
     return () => clearTimeout(timer)
-  }, [pending, state.battleSub, state.soundOn, flight])
+  }, [pending, state.battleSub, flight])
 
   useEffect(() => {
     if (state.phase !== 'battle') {
+      setFlight(null)
       setKillCam(null)
       setClosing(false)
+      dweltOn.current = null
     }
   }, [state.phase])
 

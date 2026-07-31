@@ -33,12 +33,21 @@ const tally = (fleet: FleetState) => {
   return { fired, hits }
 }
 
-const FleetStatus = ({ fleet, heading }: { fleet: FleetState; heading: string }) => (
+const FleetStatus = ({
+  fleet,
+  heading,
+  wrecks,
+}: {
+  fleet: FleetState
+  heading: string
+  /** Only those whose fall is already known: a ship under a shot still in the air is not yet lost. */
+  wrecks: readonly Ship[]
+}) => (
   <section className="status" aria-label={heading}>
     <h2 className="panel__heading">{heading}</h2>
     <ul className="status__list">
       {fleet.ships.map((ship) => {
-        const sunk = isSunk(fleet, ship)
+        const sunk = wrecks.some((wreck) => wreck.id === ship.id)
         return (
           <li key={ship.id} className={`status__ship${sunk ? ' status__ship--sunk' : ''}`}>
             <span className="status__name">{ship.name}</span>
@@ -85,7 +94,9 @@ export const Battle = ({
   const britishWrecks = sunkShips(state.enemy).filter(
     (ship) => inFlightAtThem === null || !shipCells(ship).includes(inFlightAtThem),
   )
-  const ourWrecks = sunkShips(state.player)
+  const ourWrecks = sunkShips(state.player).filter(
+    (ship) => inFlightAtUs === null || !shipCells(ship).includes(inFlightAtUs),
+  )
 
   return (
     <main className={`screen screen--battle${closing ? ' screen--closing' : ''}`}>
@@ -170,8 +181,8 @@ export const Battle = ({
           </section>
 
           <div className="battle__statuses">
-            <FleetStatus fleet={state.enemy} heading="Royal Navy" />
-            <FleetStatus fleet={state.player} heading="Combined Fleet" />
+            <FleetStatus fleet={state.enemy} heading="Royal Navy" wrecks={britishWrecks} />
+            <FleetStatus fleet={state.player} heading="Combined Fleet" wrecks={ourWrecks} />
           </div>
         </div>
 
