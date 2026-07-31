@@ -246,6 +246,15 @@
   line-height: 1.2;
 }
 
+/* her plan drawn to her rate: a first rate runs long, a two-decker short */
+.ship.roll__mark {
+  display: block;
+  width: auto;
+  height: 2.6rem;
+  margin: 0 0 0.15rem -0.4rem;
+  opacity: 0.92;
+}
+
 .roll__line {
   margin: 0.1rem 0 0;
   color: var(--ink-soft);
@@ -575,29 +584,76 @@
   position: absolute;
 }
 
-.hull {
+/* ---------- ships, drawn from above as on a chart ---------- */
+
+.ship {
   width: 100%;
   height: 100%;
   overflow: visible;
-}
-
-.hull polygon {
-  fill: rgba(36, 31, 26, 0.14);
   stroke: var(--ink);
-  stroke-width: 0.5;
-  vector-effect: non-scaling-stroke;
+  stroke-width: 0.85;
+  stroke-linecap: round;
+  fill: none;
 }
 
-.hull circle {
+.ship__hull {
+  fill: rgba(232, 220, 196, 0.82);
+  stroke-width: 1;
+}
+
+.ship__deck {
+  fill: rgba(36, 31, 26, 0.12);
+  stroke: rgba(36, 31, 26, 0.55);
+  stroke-width: 0.55;
+}
+
+.ship__ports rect {
+  fill: rgba(36, 31, 26, 0.72);
+  stroke: none;
+}
+
+/* canvas, drawn pale so the hull stays the strongest line on the chart */
+.ship__sail-shadow {
+  stroke: rgba(36, 31, 26, 0.34);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+
+.ship__sail {
+  stroke: rgba(248, 242, 228, 0.9);
+  stroke-width: 1.05;
+  stroke-linecap: round;
+}
+
+.ship__mast {
   fill: var(--ink);
+  stroke: none;
+}
+
+.ship__spar {
+  stroke-width: 0.5;
+  stroke: rgba(36, 31, 26, 0.62);
+}
+
+.ship__ensign {
+  stroke: none;
+}
+
+/* colours over the taffrail: the Combined Fleet's blue, the red ensign for Nelson */
+.ship--combined .ship__ensign {
+  fill: rgba(30, 58, 95, 0.85);
+}
+
+.ship--british .ship__ensign {
+  fill: rgba(107, 35, 37, 0.85);
 }
 
 .board__grid--shake {
   animation: board-shake var(--shake-beat) ease-out;
 }
 
-/* a struck ship comes up out of the water damaged, over half a second */
-.hull--sunk {
+/* a struck ship falls off her heading and burns where she lies */
+.ship--sunk {
   transform-origin: 50% 50%;
   animation: hull-strike var(--strike-beat) ease-out both;
 }
@@ -613,14 +669,71 @@
   }
 }
 
-.hull--sunk polygon {
-  fill: rgba(107, 35, 37, 0.3);
+.ship--sunk .ship__hull {
+  fill: rgba(107, 35, 37, 0.22);
   stroke: rgba(107, 35, 37, 0.85);
   stroke-dasharray: 3 2;
 }
 
-.hull--sunk circle {
-  fill: rgba(107, 35, 37, 0.6);
+.ship--sunk .ship__deck {
+  stroke: rgba(107, 35, 37, 0.6);
+  fill: rgba(107, 35, 37, 0.14);
+}
+
+.ship--sunk .ship__spar {
+  stroke: rgba(107, 35, 37, 0.5);
+  stroke-dasharray: 1.5 1.5;
+}
+
+/* her canvas is shot away: the yards hang bare */
+.ship--sunk .ship__sail {
+  stroke: rgba(154, 160, 160, 0.5);
+  stroke-width: 0.5;
+}
+
+.ship--sunk .ship__sail-shadow {
+  stroke: rgba(107, 35, 37, 0.28);
+  stroke-width: 0.9;
+  stroke-dasharray: 1.2 1.6;
+}
+
+.ship--sunk .ship__mast,
+.ship--sunk .ship__ports rect {
+  fill: rgba(107, 35, 37, 0.55);
+}
+
+.ship--sunk .ship__ensign {
+  fill: rgba(107, 35, 37, 0.35);
+}
+
+.ship__smoke ellipse {
+  fill: var(--smoke);
+  stroke: none;
+  opacity: 0.22;
+  transform-origin: 50% 50%;
+  animation: smoke-drift 7s ease-in-out infinite;
+}
+
+.ship__smoke ellipse:nth-child(2) {
+  animation-duration: 9s;
+  animation-delay: -2s;
+}
+
+.ship__smoke ellipse:nth-child(3) {
+  animation-duration: 11s;
+  animation-delay: -5s;
+}
+
+@keyframes smoke-drift {
+  0%,
+  100% {
+    opacity: 0.14;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.12);
+  }
 }
 
 /* ---------- deployment ---------- */
@@ -719,6 +832,20 @@
   border-color: var(--brass);
   border-left-color: var(--brass);
   background: rgba(30, 58, 95, 0.12);
+  opacity: 1;
+}
+
+/* the card carries her plan, drawn to the cells she takes up */
+.ship.roster__mark {
+  display: block;
+  width: auto;
+  height: 1.4rem;
+  margin: 0.25rem 0 0.1rem -0.2rem;
+  opacity: 0.75;
+}
+
+.roster__ship--active .roster__mark,
+.roster__ship:hover .roster__mark {
   opacity: 1;
 }
 

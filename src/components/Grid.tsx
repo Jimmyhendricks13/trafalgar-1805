@@ -2,49 +2,9 @@ import { useCallback } from 'react'
 import { shipCells } from '../game/board'
 import type { CellState, Ship } from '../game/types'
 import { BOARD_SIZE, COLUMNS, cellName, toIndex, toX, toY } from '../game/types'
+import { ShipMark } from './ShipMark'
 
 const ROWS = Array.from({ length: BOARD_SIZE }, (_, i) => i + 1)
-
-const hullPoints = (length: number, vertical: boolean): string => {
-  const along = length * 10
-  const points: [number, number][] = [
-    [1, 5],
-    [3.2, 1.5],
-    [along - 3.2, 1.5],
-    [along - 1, 5],
-    [along - 3.2, 8.5],
-    [3.2, 8.5],
-  ]
-  return points.map(([u, v]) => (vertical ? `${v},${u}` : `${u},${v}`)).join(' ')
-}
-
-const Hull = ({ ship, sunk }: { ship: Ship; sunk: boolean }) => {
-  const vertical = ship.orientation === 'vertical'
-  const along = ship.length * 10
-  const masts = Array.from({ length: ship.length }, (_, i) => i * 10 + 5).slice(
-    0,
-    Math.max(1, ship.length - 1),
-  )
-
-  return (
-    <svg
-      className={`hull${sunk ? ' hull--sunk' : ''}`}
-      viewBox={vertical ? `0 0 10 ${along}` : `0 0 ${along} 10`}
-      preserveAspectRatio="none"
-      aria-hidden="true"
-    >
-      <polygon points={hullPoints(ship.length, vertical)} />
-      {masts.map((offset) => (
-        <circle
-          key={offset}
-          cx={vertical ? 5 : offset + 2}
-          cy={vertical ? offset + 2 : 5}
-          r={0.9}
-        />
-      ))}
-    </svg>
-  )
-}
 
 export interface GridProps {
   readonly cells: readonly CellState[]
@@ -58,6 +18,8 @@ export interface GridProps {
   readonly lastShot?: number | null
   readonly variant?: 'target' | 'own'
   readonly shake?: boolean
+  /** Whose colours the ships drawn on this board fly. */
+  readonly colours?: 'combined' | 'british'
   /** Veils cells that have not been fired upon: only the enemy's waters wear it. */
   readonly fog?: boolean
 }
@@ -74,6 +36,7 @@ export const Grid = ({
   lastShot,
   variant = 'target',
   shake = false,
+  colours = 'combined',
   fog = false,
 }: GridProps) => {
   const previewCells = new Set(preview?.cells ?? [])
@@ -161,7 +124,12 @@ export const Grid = ({
                   height: `${(ship.orientation === 'vertical' ? ship.length : 1) * 10}%`,
                 }}
               >
-                <Hull ship={ship} sunk={sunkShipIds.includes(ship.id)} />
+                <ShipMark
+                  cells={ship.length}
+                  colours={colours}
+                  vertical={ship.orientation === 'vertical'}
+                  sunk={sunkShipIds.includes(ship.id)}
+                />
               </div>
             ))}
           </div>
