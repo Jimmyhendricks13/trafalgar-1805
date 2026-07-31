@@ -26,6 +26,8 @@ export interface GridProps {
   readonly inFlight?: number | null
   /** Drawn over the water: the shot on its way. */
   readonly overlay?: ReactNode
+  /** The kill cam: the point the board leans in on, in percentages. */
+  readonly zoom?: { readonly x: number; readonly y: number } | null
 }
 
 export const Grid = ({
@@ -44,6 +46,7 @@ export const Grid = ({
   fog = false,
   inFlight = null,
   overlay,
+  zoom = null,
 }: GridProps) => {
   const previewCells = new Set(preview?.cells ?? [])
 
@@ -77,7 +80,11 @@ export const Grid = ({
   }
 
   return (
-    <div className={`board board--${variant}${fog ? ' board--fog' : ''}`}>
+    <div
+      className={`board board--${variant}${fog ? ' board--fog' : ''}${
+        zoom ? ' board--zoomed' : ''
+      }`}
+    >
       <div className="board__labels board__labels--x" aria-hidden="true">
         {COLUMNS.map((column) => (
           <span key={column}>{column}</span>
@@ -89,7 +96,10 @@ export const Grid = ({
         ))}
       </div>
       <div
-        className={`board__grid${shake ? ' board__grid--shake' : ''}`}
+        className={`board__grid${shake ? ' board__grid--shake' : ''}${
+          zoom ? ' board__grid--zoomed' : ''
+        }`}
+        style={zoom ? { transformOrigin: `${zoom.x}% ${zoom.y}%` } : undefined}
         role="group"
         aria-label={ariaLabel}
         onKeyDown={handleKeyDown}

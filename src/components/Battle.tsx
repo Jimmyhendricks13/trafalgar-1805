@@ -18,6 +18,10 @@ interface Props {
   readonly flight: { readonly side: 'player' | 'ai'; readonly target: number } | null
   readonly flightMs: number
   readonly onLanded: () => void
+  /** Where the British board leans in after one of our kills. */
+  readonly killCam: { readonly x: number; readonly y: number } | null
+  /** The board fading out of the winning kill and into the aftermath. */
+  readonly closing: boolean
 }
 
 const sunkShips = (fleet: FleetState): readonly Ship[] =>
@@ -70,6 +74,8 @@ export const Battle = ({
   flight,
   flightMs,
   onLanded,
+  killCam,
+  closing,
 }: Props) => {
   const ours = tally(state.enemy)
   const theirs = tally(state.player)
@@ -82,7 +88,7 @@ export const Battle = ({
   const ourWrecks = sunkShips(state.player)
 
   return (
-    <main className="screen screen--battle">
+    <main className={`screen screen--battle${closing ? ' screen--closing' : ''}`}>
       <header className="screen__header screen__header--row">
         <div>
           <h1 className="screen__title">Cape Trafalgar</h1>
@@ -123,6 +129,7 @@ export const Battle = ({
             ships={britishWrecks}
             sunkShipIds={britishWrecks.map((ship) => ship.id)}
             inFlight={inFlightAtThem}
+            zoom={killCam}
             overlay={
               inFlightAtThem !== null && (
                 <Cannonball
