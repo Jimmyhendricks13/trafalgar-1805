@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { GOD_SAVE_THE_KING, MARSEILLAISE, useAnthem } from '../anthem'
 import { DEFEAT_CODA, RESIGNED_CODA, VICTORY_CODA } from '../content/history'
 import { DIFFICULTIES } from '../game/ai'
@@ -20,8 +19,8 @@ export const Aftermath = ({ state, dispatch }: Props) => {
   const lost = state.player.ships.filter((ship) => isSunk(state.player, ship))
   const opponent = DIFFICULTIES.find((option) => option.id === state.difficulty)
 
-  // The anthem plays whatever the gunnery is set to; it has its own toggle.
-  const [muted, setMuted] = useState(false)
+  // One master toggle: the same switch that silences the guns silences the band.
+  const muted = !state.soundOn
   useAnthem(won ? MARSEILLAISE : GOD_SAVE_THE_KING, muted)
 
   return (
@@ -31,7 +30,7 @@ export const Aftermath = ({ state, dispatch }: Props) => {
         className="anthem"
         aria-pressed={muted}
         aria-label={muted ? 'Play the anthem' : 'Silence the anthem'}
-        onClick={() => setMuted((was) => !was)}
+        onClick={() => dispatch({ type: 'TOGGLE_SOUND' })}
       >
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d="M4 9h3l5-4v14l-5-4H4z" />

@@ -6,7 +6,7 @@ import { Preamble } from './components/Preamble'
 import { Title } from './components/Title'
 import type { DispatchTone } from './content/dispatches'
 import { createInitialState, gameReducer } from './game/reducer'
-import { playTone } from './sound'
+import { playCombat, preloadCombatSounds } from './sound'
 
 /** Each shot holds the turn for as long as its animation runs. */
 const MISS_MS = 400
@@ -43,21 +43,25 @@ export const App = () => {
   /** The shot still in the air, whose fall is not yet known. */
   const [flight, setFlight] = useState<Flight | null>(null)
   const still = useRef(prefersStillness())
-  const lastHeard = useRef(0)
 
   const resolving =
     state.battleSub === 'resolvingPlayerShot' || state.battleSub === 'resolvingAiShot'
   const pending = resolving ? state.log[0] : undefined
 
-  // A shot is in the air from the moment the guns speak until it lands.
   useEffect(() => {
-    if (state.phase !== 'battle' || still.current) return
+    if (state.phase === 'battle') preloadCombatSounds()
+  }, [state.phase])
+
+  // The guns speak as the shot leaves them, and it is in the air until it lands.
+  useEffect(() => {
+    if (state.phase !== 'battle') return
     const ours = state.battleSub === 'resolvingPlayerShot' ? state.lastPlayerShot : null
     const theirs = state.battleSub === 'resolvingAiShot' ? state.lastAiShot : null
     const target = ours ?? theirs
     if (target === null) return
-    setFlight({ side: ours !== null ? 'player' : 'ai', target })
-  }, [state.phase, state.battleSub, state.lastPlayerShot, state.lastAiShot])
+    if (state.soundOn) playCombat(ours !== null ? 'ours' : 'theirs')
+    if (!still.current) setFlight({ side: ours !== null ? 'player' : 'ai', target })
+  }, [state.phase, state.battleSub, state.lastPlayerShot, state.lastAiShot, state.soundOn])
 
   const landNow = useCallback(() => setFlight(null), [])
 
@@ -100,26 +104,20 @@ export const App = () => {
     if (state.phase !== 'battle') setRevealed(state.nextDispatchId)
   }, [state.phase, state.nextDispatchId])
 
-  // A sinking shakes the board it landed on, once.
+  // A sinking shakes the board it landed on, once, and is heard.
   useEffect(() => {
     if (flight) return
     if (!pending || (pending.tone !== 'sunk' && pending.tone !== 'grave')) return
+    if (state.soundOn) playCombat('sinking')
     setShake(state.battleSub === 'resolvingPlayerShot' ? 'target' : 'own')
     const timer = setTimeout(() => setShake(null), SHAKE_MS)
     return () => clearTimeout(timer)
-  }, [pending, state.battleSub, flight])
+  }, [pending, state.battleSub, state.soundOn, flight])
 
   const visibleLog = useMemo(
     () => state.log.filter((entry) => entry.id <= revealed),
     [state.log, revealed],
   )
-
-  useEffect(() => {
-    const latest = visibleLog[0]
-    if (!latest || latest.id === lastHeard.current) return
-    lastHeard.current = latest.id
-    if (state.soundOn && latest.side !== 'system') playTone(latest.tone)
-  }, [visibleLog, state.soundOn])
 
   if (state.phase === 'title') return <Title state={state} dispatch={dispatch} />
   if (state.phase === 'preamble') return <Preamble dispatch={dispatch} />
