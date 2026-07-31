@@ -97,6 +97,7 @@ export const Battle = ({ state, dispatch, log, shake, armed }: Props) => {
             lastShot={state.lastPlayerShot}
             shake={shake === 'target'}
             fog
+            colours="british"
             ships={britishWrecks}
             sunkShipIds={britishWrecks.map((ship) => ship.id)}
             onCell={(index) => dispatch({ type: 'FIRE', index })}

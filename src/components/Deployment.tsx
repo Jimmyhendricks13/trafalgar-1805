@@ -3,6 +3,7 @@ import { VILLENEUVE_FORMATION_NOTE } from '../content/dispatches'
 import { canPlace, fitsOnBoard, shipCells } from '../game/board'
 import type { Action, GameState } from '../game/reducer'
 import { Grid } from './Grid'
+import { ShipMark } from './ShipMark'
 
 interface Props {
   readonly state: GameState
@@ -32,7 +33,26 @@ export const Deployment = ({ state, dispatch }: Props) => {
     return { cells: shipCells(candidate), legal: canPlace(state.player.ships, candidate) }
   })()
 
-  const heading = state.orientation === 'vertical' ? 'north–south' : 'east–west'
+  /** A turn is refused outright if she would run off the board or foul another ship. */
+  const turned = selected
+    ? {
+        ...selected,
+        orientation:
+          selected.orientation === 'horizontal' ? ('vertical' as const) : ('horizontal' as const),
+      }
+    : null
+  const canTurn =
+    turned !== null &&
+    fitsOnBoard(turned.origin, turned.orientation, turned.length) &&
+    canPlace(state.player.ships, turned)
+
+  const heading =
+    (selected?.orientation ?? state.orientation) === 'vertical' ? 'north–south' : 'east–west'
+  const turnNote = selected
+    ? canTurn
+      ? `Currently ${heading}`
+      : 'No sea room to bring her about'
+    : 'Select a ship to bring her about'
 
   return (
     <main className="screen screen--deployment">
@@ -96,6 +116,7 @@ export const Deployment = ({ state, dispatch }: Props) => {
                       <span className="roster__meta">
                         {ship.guns} guns · {ship.length} cells
                       </span>
+                      <ShipMark cells={ship.length} className="roster__mark" />
                       <span className="roster__note">{ship.note}</span>
                       <span className="roster__state">
                         {active ? 'Selected — click the grid' : 'Stationed'}
@@ -113,21 +134,15 @@ export const Deployment = ({ state, dispatch }: Props) => {
               <button
                 type="button"
                 className="button button--stacked"
-                onClick={() =>
-                  // With a ship in hand the button brings her about, as R does; otherwise it
-                  // only sets the heading the next placement will take.
-                  selected
-                    ? dispatch({ type: 'ROTATE_SHIP', id: selected.id })
-                    : dispatch({
-                        type: 'SET_ORIENTATION',
-                        orientation: state.orientation === 'vertical' ? 'horizontal' : 'vertical',
-                      })
-                }
+                disabled={!canTurn}
+                onClick={() => {
+                  if (selected && canTurn) dispatch({ type: 'ROTATE_SHIP', id: selected.id })
+                }}
               >
                 <span>
                   Rotate (<kbd>R</kbd>)
                 </span>
-                <span className="button__note">Currently {heading}</span>
+                <span className="button__note">{turnNote}</span>
               </button>
               <button
                 type="button"
