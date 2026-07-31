@@ -222,8 +222,9 @@ Restraint is the whole brief. If it looks like a mobile game, it is wrong.
   aftermath list rules a line through her name.
 - **Motion:** 200–650 ms, ease-out, opacity and small transforms only. Everything is
   disabled under `prefers-reduced-motion`.
-- **Sound:** off by default, one toggle. Distant gunfire for a hit, a dull thud for a
-  miss, low thunder for a sinking. Synthesised via WebAudio — again, no assets.
+- **Sound:** on by default, one toggle governing everything — the guns, a sinking, and
+  the closing anthem. Three clips only: our cannon at full weight, theirs at a distance,
+  and timber and water as a ship goes down. Silence between them is the atmosphere.
 
 ---
 
