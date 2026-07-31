@@ -297,8 +297,13 @@
   transition: background var(--beat) ease-out, color var(--beat) ease-out;
 }
 
-.button:hover {
+.button:hover:not(:disabled) {
   background: rgba(232, 220, 196, 1);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 
 .button--primary {
