@@ -703,7 +703,12 @@
   fill: rgba(107, 35, 37, 0.55);
 }
 
-.ship--sunk .ship__ensign {
+/* her colours still fly over the wreck, faded */
+.ship--combined.ship--sunk .ship__ensign {
+  fill: rgba(30, 58, 95, 0.35);
+}
+
+.ship--british.ship--sunk .ship__ensign {
   fill: rgba(107, 35, 37, 0.35);
 }
 
