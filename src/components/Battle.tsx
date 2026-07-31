@@ -1,7 +1,9 @@
 import type { Dispatch } from '../content/dispatches'
 import type { Action, GameState } from '../game/reducer'
+import { shipCells } from '../game/board'
 import { isSunk } from '../game/resolve'
 import type { FleetState, Ship } from '../game/types'
+import { Cannonball } from './Cannonball'
 import { Grid } from './Grid'
 import { SignalLog } from './SignalLog'
 
@@ -12,6 +14,10 @@ interface Props {
   readonly shake: 'target' | 'own' | null
   /** False for the held beat before the first broadside. */
   readonly armed: boolean
+  /** The shot in the air, if there is one. */
+  readonly flight: { readonly side: 'player' | 'ai'; readonly target: number } | null
+  readonly flightMs: number
+  readonly onLanded: () => void
 }
 
 const sunkShips = (fleet: FleetState): readonly Ship[] =>
@@ -55,10 +61,24 @@ const turnLabel = (state: GameState): string => {
   return 'The British fire.'
 }
 
-export const Battle = ({ state, dispatch, log, shake, armed }: Props) => {
+export const Battle = ({
+  state,
+  dispatch,
+  log,
+  shake,
+  armed,
+  flight,
+  flightMs,
+  onLanded,
+}: Props) => {
   const ours = tally(state.enemy)
   const theirs = tally(state.player)
-  const britishWrecks = sunkShips(state.enemy)
+  const inFlightAtThem = flight?.side === 'player' ? flight.target : null
+  const inFlightAtUs = flight?.side === 'ai' ? flight.target : null
+  // A wreck is not seen until the shot that made her has landed.
+  const britishWrecks = sunkShips(state.enemy).filter(
+    (ship) => inFlightAtThem === null || !shipCells(ship).includes(inFlightAtThem),
+  )
   const ourWrecks = sunkShips(state.player)
 
   return (
@@ -93,13 +113,26 @@ export const Battle = ({ state, dispatch, log, shake, armed }: Props) => {
           <Grid
             cells={state.enemy.incoming}
             ariaLabel="British waters. Choose a cell to fire upon."
-            interactive={armed && state.battleSub === 'awaitingPlayerShot' && !state.winner}
+            interactive={
+              armed && state.battleSub === 'awaitingPlayerShot' && !state.winner && !flight
+            }
             lastShot={state.lastPlayerShot}
             shake={shake === 'target'}
             fog
             colours="british"
             ships={britishWrecks}
             sunkShipIds={britishWrecks.map((ship) => ship.id)}
+            inFlight={inFlightAtThem}
+            overlay={
+              inFlightAtThem !== null && (
+                <Cannonball
+                  target={inFlightAtThem}
+                  from="bottom"
+                  flightMs={flightMs}
+                  onLanded={onLanded}
+                />
+              )
+            }
             onCell={(index) => dispatch({ type: 'FIRE', index })}
           />
         </section>
@@ -115,6 +148,17 @@ export const Battle = ({ state, dispatch, log, shake, armed }: Props) => {
               variant="own"
               lastShot={state.lastAiShot}
               shake={shake === 'own'}
+              inFlight={inFlightAtUs}
+              overlay={
+                inFlightAtUs !== null && (
+                  <Cannonball
+                    target={inFlightAtUs}
+                    from="top"
+                    flightMs={flightMs}
+                    onLanded={onLanded}
+                  />
+                )
+              }
             />
           </section>
 

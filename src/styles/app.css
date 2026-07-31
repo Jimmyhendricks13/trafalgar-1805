@@ -1099,6 +1099,50 @@
   }
 }
 
+/* ---------- round shot in the air ---------- */
+
+.shot {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.shot__ball,
+.shot__puff {
+  position: absolute;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  will-change: left, top;
+}
+
+.shot__ball {
+  width: 7px;
+  height: 7px;
+  background: #1b1712;
+  box-shadow: 0 0 3px rgba(27, 23, 18, 0.55);
+}
+
+.shot__puff {
+  width: 5px;
+  height: 5px;
+  background: rgba(96, 92, 84, 0.55);
+  opacity: 0;
+}
+
+/* theirs is heard and seen from further off */
+.shot--top .shot__ball {
+  width: 5px;
+  height: 5px;
+  box-shadow: none;
+}
+
+.shot--top .shot__puff {
+  width: 4px;
+  height: 4px;
+  background: rgba(96, 92, 84, 0.32);
+}
+
 /* ---------- aftermath ---------- */
 
 .screen--aftermath .screen__header {
