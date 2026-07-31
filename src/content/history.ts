@@ -21,19 +21,29 @@ export const PREAMBLE_AFTER: readonly string[] = [
 export const FLEET_ROLL_HEADING = 'The Combined Fleet'
 export const FLEET_ROLL_LEDE = 'These are your ships, Commander. Learn their names.'
 
-export const FLEET_ROLL: readonly { readonly name: string; readonly line: string }[] = [
+interface RollEntry {
+  readonly name: string
+  readonly line: string
+  /** Her length in cells, so the chart mark beside her is drawn to her rate. */
+  readonly cells: number
+}
+
+export const FLEET_ROLL: readonly RollEntry[] = [
   {
     name: 'Santísima Trinidad',
+    cells: 5,
     line: "136 guns, four decks. The largest warship in the world. Spain's pride.",
   },
-  { name: 'Bucentaure', line: "80 guns. Villeneuve's flagship. Where you stand." },
-  { name: 'Santa Ana', line: '112 guns. Vice-Admiral Álava, second in the Spanish line.' },
+  { name: 'Bucentaure', line: "80 guns. Villeneuve's flagship. Where you stand.", cells: 4 },
+  { name: 'Santa Ana', line: '112 guns. Vice-Admiral Álava, second in the Spanish line.', cells: 3 },
   {
     name: 'Redoutable',
+    cells: 3,
     line: '74 guns. Captain Lucas drilled her crew in musketry. Her marksman will kill Nelson.',
   },
   {
     name: 'Achille',
+    cells: 2,
     line: '74 guns. She will burn to the waterline. History has already written her end. You are here to change it.',
   },
 ]
@@ -41,25 +51,30 @@ export const FLEET_ROLL: readonly { readonly name: string; readonly line: string
 export const ENEMY_ROLL_HEADING = 'The Royal Navy'
 export const ENEMY_ROLL_LEDE = 'And these are the five you must break. Nelson brought them himself.'
 
-export const ENEMY_ROLL: readonly { readonly name: string; readonly line: string }[] = [
+export const ENEMY_ROLL: readonly RollEntry[] = [
   {
     name: 'HMS Victory',
+    cells: 5,
     line: "104 guns. Nelson's flagship. He is aboard her, and he does not intend to survive the day quietly.",
   },
   {
     name: 'HMS Royal Sovereign',
+    cells: 4,
     line: "100 guns. Collingwood's flagship, and the first British ship into your line.",
   },
   {
     name: 'HMS Téméraire',
+    cells: 3,
     line: '98 guns. She saves Victory from boarding. Turner will paint her being towed away to be broken up.',
   },
   {
     name: 'HMS Belleisle',
+    cells: 3,
     line: '74 guns. Dismasted to a hulk, colours nailed to the stump, still firing.',
   },
   {
     name: 'HMS Mars',
+    cells: 2,
     line: '74 guns. Captain Duff is killed by a roundshot at the head of his own crew. She holds her station regardless.',
   },
 ]

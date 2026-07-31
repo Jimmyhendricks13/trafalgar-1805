@@ -11,15 +11,29 @@ import {
   PREAMBLE_AFTER,
 } from '../content/history'
 import type { Action } from '../game/reducer'
+import { ShipMark } from './ShipMark'
 
 interface Props {
   readonly dispatch: (action: Action) => void
 }
 
-const Roll = ({ ships }: { ships: readonly { name: string; line: string }[] }) => (
+interface RollShip {
+  readonly name: string
+  readonly line: string
+  readonly cells: number
+}
+
+const Roll = ({
+  ships,
+  colours,
+}: {
+  ships: readonly RollShip[]
+  colours: 'combined' | 'british'
+}) => (
   <dl className="roll">
     {ships.map((ship) => (
       <div className="roll__ship" key={ship.name}>
+        <ShipMark cells={ship.cells} colours={colours} className="roll__mark" />
         <dt className="roll__name">{ship.name}</dt>
         <dd className="roll__line">{ship.line}</dd>
       </div>
@@ -67,11 +81,11 @@ export const Preamble = ({ dispatch }: Props) => {
       <article className="despatch">
         <h1 className="despatch__heading">{FLEET_ROLL_HEADING}</h1>
         <p className="despatch__lede">{FLEET_ROLL_LEDE}</p>
-        <Roll ships={FLEET_ROLL} />
+        <Roll ships={FLEET_ROLL} colours="combined" />
 
         <h2 className="roll__heading">{ENEMY_ROLL_HEADING}</h2>
         <p className="despatch__lede">{ENEMY_ROLL_LEDE}</p>
-        <Roll ships={ENEMY_ROLL} />
+        <Roll ships={ENEMY_ROLL} colours="british" />
       </article>
 
       <button

@@ -3,6 +3,7 @@ import { VILLENEUVE_FORMATION_NOTE } from '../content/dispatches'
 import { canPlace, fitsOnBoard, shipCells } from '../game/board'
 import type { Action, GameState } from '../game/reducer'
 import { Grid } from './Grid'
+import { ShipMark } from './ShipMark'
 
 interface Props {
   readonly state: GameState
@@ -96,6 +97,7 @@ export const Deployment = ({ state, dispatch }: Props) => {
                       <span className="roster__meta">
                         {ship.guns} guns · {ship.length} cells
                       </span>
+                      <ShipMark cells={ship.length} className="roster__mark" />
                       <span className="roster__note">{ship.note}</span>
                       <span className="roster__state">
                         {active ? 'Selected — click the grid' : 'Stationed'}
