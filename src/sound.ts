@@ -1,46 +1,65 @@
-import type { DispatchTone } from './content/dispatches'
+/**
+ * Three sounds and no more: our guns, theirs across the water, and a ship
+ * going down. The silence between them is the atmosphere.
+ */
+export type Combat = 'ours' | 'theirs' | 'sinking'
 
-let context: AudioContext | null = null
+const CANNON = '/audio/cannon.mp3'
+const SINKING = '/audio/sinking.mp3'
 
-const audio = (): AudioContext | null => {
-  if (typeof window === 'undefined') return null
-  if (!context) context = new AudioContext()
-  if (context.state === 'suspended') void context.resume()
-  return context
+/** Their guns are heard from a distance, and a beat late. */
+const DISTANT_GAIN = 0.4
+const DISTANT_DELAY_MS = 100
+
+interface Clip {
+  readonly src: string
+  readonly gain: number
+  readonly delay: number
 }
 
-/** Filtered noise: a cannon at a distance is a thud with a long tail, not a beep. */
-const boom = (
-  ctx: AudioContext,
-  { duration, cutoff, gain }: { duration: number; cutoff: number; gain: number },
-) => {
-  const frames = Math.floor(ctx.sampleRate * duration)
-  const buffer = ctx.createBuffer(1, frames, ctx.sampleRate)
-  const channel = buffer.getChannelData(0)
-  for (let i = 0; i < frames; i += 1) {
-    const decay = (1 - i / frames) ** 2.2
-    channel[i] = (Math.random() * 2 - 1) * decay
+const CLIPS: Record<Combat, Clip> = {
+  ours: { src: CANNON, gain: 1, delay: 0 },
+  theirs: { src: CANNON, gain: DISTANT_GAIN, delay: DISTANT_DELAY_MS },
+  sinking: { src: SINKING, gain: 0.85, delay: 0 },
+}
+
+/** Two of each, so a shot never cuts off the one before it. */
+const VOICES = 2
+
+const pool = new Map<string, HTMLAudioElement[]>()
+let next = 0
+
+const voices = (src: string): HTMLAudioElement[] => {
+  const existing = pool.get(src)
+  if (existing) return existing
+  const made = Array.from({ length: VOICES }, () => {
+    const element = new Audio(src)
+    element.preload = 'auto'
+    return element
+  })
+  pool.set(src, made)
+  return made
+}
+
+/** Called when the guns come within reach, so the first shot is not late. */
+export const preloadCombatSounds = (): void => {
+  if (typeof window === 'undefined') return
+  for (const clip of Object.values(CLIPS)) voices(clip.src).forEach((voice) => voice.load())
+}
+
+export const playCombat = (sound: Combat): void => {
+  if (typeof window === 'undefined') return
+  const clip = CLIPS[sound]
+  const available = voices(clip.src)
+  next = (next + 1) % available.length
+  const voice = available[next]
+
+  const fire = () => {
+    voice.currentTime = 0
+    voice.volume = clip.gain
+    void voice.play().catch(() => undefined)
   }
 
-  const source = ctx.createBufferSource()
-  source.buffer = buffer
-
-  const filter = ctx.createBiquadFilter()
-  filter.type = 'lowpass'
-  filter.frequency.value = cutoff
-
-  const volume = ctx.createGain()
-  volume.gain.value = gain
-
-  source.connect(filter).connect(volume).connect(ctx.destination)
-  source.start()
-}
-
-export const playTone = (tone: DispatchTone): void => {
-  const ctx = audio()
-  if (!ctx) return
-  if (tone === 'hit') boom(ctx, { duration: 0.7, cutoff: 420, gain: 0.35 })
-  else if (tone === 'sunk') boom(ctx, { duration: 1.6, cutoff: 260, gain: 0.45 })
-  else if (tone === 'grave') boom(ctx, { duration: 2.6, cutoff: 180, gain: 0.5 })
-  else boom(ctx, { duration: 0.45, cutoff: 900, gain: 0.14 })
+  if (clip.delay === 0) fire()
+  else window.setTimeout(fire, clip.delay)
 }

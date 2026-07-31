@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, type ReactNode } from 'react'
 import { shipCells } from '../game/board'
 import type { CellState, Ship } from '../game/types'
 import { BOARD_SIZE, COLUMNS, cellName, toIndex, toX, toY } from '../game/types'
@@ -22,6 +22,12 @@ export interface GridProps {
   readonly colours?: 'combined' | 'british'
   /** Veils cells that have not been fired upon: only the enemy's waters wear it. */
   readonly fog?: boolean
+  /** A cell whose result is held back while the shot is still in the air. */
+  readonly inFlight?: number | null
+  /** Drawn over the water: the shot on its way. */
+  readonly overlay?: ReactNode
+  /** The kill cam: the point the board leans in on, in percentages. */
+  readonly zoom?: { readonly x: number; readonly y: number } | null
 }
 
 export const Grid = ({
@@ -38,6 +44,9 @@ export const Grid = ({
   shake = false,
   colours = 'combined',
   fog = false,
+  inFlight = null,
+  overlay,
+  zoom = null,
 }: GridProps) => {
   const previewCells = new Set(preview?.cells ?? [])
 
@@ -71,7 +80,11 @@ export const Grid = ({
   }
 
   return (
-    <div className={`board board--${variant}${fog ? ' board--fog' : ''}`}>
+    <div
+      className={`board board--${variant}${fog ? ' board--fog' : ''}${
+        zoom ? ' board--zoomed' : ''
+      }`}
+    >
       <div className="board__labels board__labels--x" aria-hidden="true">
         {COLUMNS.map((column) => (
           <span key={column}>{column}</span>
@@ -83,25 +96,30 @@ export const Grid = ({
         ))}
       </div>
       <div
-        className={`board__grid${shake ? ' board__grid--shake' : ''}`}
+        className={`board__grid${shake ? ' board__grid--shake' : ''}${
+          zoom ? ' board__grid--zoomed' : ''
+        }`}
+        style={zoom ? { transformOrigin: `${zoom.x}% ${zoom.y}%` } : undefined}
         role="group"
         aria-label={ariaLabel}
         onKeyDown={handleKeyDown}
         onMouseLeave={() => onHover?.(null)}
       >
-        {cells.map((state, index) => {
+        {cells.map((rawState, index) => {
+          // Her fall is not known until the shot lands.
+          const state = index === inFlight ? 'unknown' : rawState
           const classes = ['cell', `cell--${state}`]
           if (previewCells.has(index)) {
             classes.push(preview?.legal ? 'cell--preview' : 'cell--preview-bad')
           }
-          if (lastShot === index) classes.push('cell--latest')
+          if (lastShot === index && index !== inFlight) classes.push('cell--latest')
           return (
             <button
               key={index}
               type="button"
               data-index={index}
               className={classes.join(' ')}
-              aria-label={describe(index, state)}
+              aria-label={describe(index, rawState)}
               disabled={!interactive}
               onClick={() => onCell?.(index)}
               onMouseEnter={() => onHover?.(index)}
@@ -134,6 +152,7 @@ export const Grid = ({
             ))}
           </div>
         )}
+        {overlay}
       </div>
     </div>
   )

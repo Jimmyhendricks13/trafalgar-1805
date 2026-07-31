@@ -54,10 +54,13 @@ self-hosted and the paper texture is an inline SVG filter).
 
 ## Audio
 
-Gunfire is synthesised in the browser (filtered noise, `src/sound.ts`) — no samples. The two
-anthems on the closing screen are public-domain recordings from Wikimedia Commons, trimmed to
-fourteen seconds, mono, 96 kbps:
+Three sounds in action and no more: our guns, theirs at 40% and a beat later, and a ship going
+down. Nothing plays between them. All clips are public-domain recordings from Wikimedia Commons,
+trimmed, mono, 96 kbps, and the `Cannon: audible/silent` control in the battle header silences
+the guns and the closing anthems alike:
 
+- `public/audio/cannon.mp3` — [Explosion](https://commons.wikimedia.org/wiki/File:Explosion-LS100155.ogg)
+- `public/audio/sinking.mp3` — [Boat by a wharf](https://commons.wikimedia.org/wiki/File:Boat_by_a_wharf_3.ogg)
 - `public/audio/la-marseillaise.mp3` — [La Marseillaise](https://commons.wikimedia.org/wiki/File:La_Marseillaise.ogg)
 - `public/audio/god-save-the-king.mp3` — [U.S. Navy Band, God Save the King](https://commons.wikimedia.org/wiki/File:U.S._Navy_Band_-_God_Save_the_King.oga)
 

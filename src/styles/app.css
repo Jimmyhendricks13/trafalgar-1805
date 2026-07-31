@@ -1099,10 +1099,92 @@
   }
 }
 
+/* ---------- round shot in the air ---------- */
+
+.shot {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.shot__ball,
+.shot__puff {
+  position: absolute;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  will-change: left, top;
+}
+
+.shot__ball {
+  width: 7px;
+  height: 7px;
+  background: #1b1712;
+  box-shadow: 0 0 3px rgba(27, 23, 18, 0.55);
+}
+
+.shot__puff {
+  width: 5px;
+  height: 5px;
+  background: rgba(96, 92, 84, 0.55);
+  opacity: 0;
+}
+
+/* theirs is heard and seen from further off */
+.shot--top .shot__ball {
+  width: 5px;
+  height: 5px;
+  box-shadow: none;
+}
+
+.shot--top .shot__puff {
+  width: 4px;
+  height: 4px;
+  background: rgba(96, 92, 84, 0.32);
+}
+
+/* ---------- the kill cam ---------- */
+
+.board__grid {
+  transition: transform 400ms ease-in-out;
+}
+
+/* the lean-in is kept inside her own chart, not spilled over the page */
+.board--zoomed {
+  overflow: hidden;
+}
+
+.board__grid--zoomed {
+  transform: scale(1.5);
+}
+
+.screen--closing {
+  animation: close-on-the-wreck 400ms ease-in forwards;
+}
+
+@keyframes close-on-the-wreck {
+  to {
+    opacity: 0;
+  }
+}
+
 /* ---------- aftermath ---------- */
+
+.screen--aftermath {
+  animation: fade-up 500ms ease-out;
+}
 
 .screen--aftermath .screen__header {
   text-align: center;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .ensign {

@@ -85,7 +85,7 @@ export const createInitialState = (seed: number = randomSeed()): GameState => {
     phase: 'title',
     difficulty: 'nelson',
     deathOfNelson: false,
-    soundOn: false,
+    soundOn: true,
     player: emptyFleet('player', randomLayout(COMBINED_FLEET, rng)),
     enemy: emptyFleet('ai', []),
     selectedShipId: COMBINED_FLEET[0].id,
