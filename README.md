@@ -7,8 +7,11 @@ The rules are classic Battleship: two 10×10 grids, five ships of 5/4/3/3/2 cell
 alternating single shots, hit / miss / sunk. Ships may touch but not overlap. The dressing
 is historical; the mechanics are not novel.
 
+**Play it: <https://dist-mestpyyt.devinapps.com>**
+
 Read [`spec.md`](./spec.md) first — it is the source of truth for rules, AI behaviour, art
-direction and phasing.
+direction and phasing. [`BUGS.md`](./BUGS.md) is the debugging log: the nine defects found
+while building it, what caused each one, and how it was caught.
 
 ## Running it
 
